@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://tibiccbarusu.github.io/Javascript/jquery-3.6.0.min.js" type="text/javascript"></script>
+	<script src="https://tibiccbarusu.github.io/Javascript/JSZIP3.1.2.js" type="text/javascript"></script>
+	<script src="https://tibiccbarusu.github.io/Javascript/jszip-utils.min.js" type="text/javascript"></script>
+	<script src="https://tibiccbarusu.github.io/Javascript/FileSaver.min.js" type="text/javascript"></script>
+    <title>generator</title>
+</head>
+<body>
+    <label>
+        画像をインポート:<input type="file" name="selfile" id="selfile" accept="image/png" capture="camera" />
+    </label>
+    <div>
+        <img id="thumbnail" style="width:30%;height:30%;" src="">
+    </div>
+    <div style="display:none" class="imgorigholder hide">
+    </div>
+    <script>
+        $("#selfile").change(function(){
+          if (this.files.length > 0) {
+            var file = this.files[0];
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            
+            reader.onload = function() {
+                $("#thumbnail").attr("src", reader.result );
+                image_data = reader.result;
+                
+                var imgorigholder = $(".imgorigholder");
+                var imgOrigUrl = image_data;
+                var imgOrig = $("<img>");
+                imgOrig.attr("src", imgOrigUrl);
+                imgorigholder.empty();
+                imgorigholder.append(imgOrig);
+            }
+          }
+        });
+    </script>
+    <br>
+    <div>
+        画像をインポートしたら、下のボタンを押してください。
+    </div>
+    <button id="export">
+        アドオン作成
+    </button>
+    <input onclick="window.location.reload();" type="button" value="リセットボタン" />
+</body>
+<script>
+    "use strict"
+
+    /*-------------------------------------------------------------------------------------------------*/
+    /*汎用トリガー関数*/
+    /*-------------------------------------------------------------------------------------------------*/
+    function trigger(id,trigger,func) { //汎用トリガー関数,trigger(ID{input/buttonのid},トリガー,関数名)
+        document.getElementById(id).addEventListener(trigger,function(){func();},false);
+    }
+
+    /*-------------------------------------------------------------------------------------------------*/
+    /*汎用乱数関数*/
+    /*-------------------------------------------------------------------------------------------------*/
+    function rand(min,max) { //汎用乱数関数,rand(最小値{実数},最大値{実数})
+        if (min == null || max == null) {
+            console.log("error:min or max is null.");
+        } else {
+            const minTypeof = typeof min;
+            const maxTypeof = typeof max;
+            if (minTypeof != "number" || maxTypeof != "number") {
+                console.log("error:min or max is not number.");
+                return 0;
+            } else if (min > max) {
+                console.log("error:min > max");
+                return 0;
+            } else {
+                const random = Math.random();
+                const rand = Math.round(((random * (max - min + 1)) + min) >= max + 0.5 ? min : (random * (max - min + 1)) + min);
+                return rand;
+            }
+        }
+    }
+
+    const imageUrls = [
+        "https://tibiccbarusu.github.io/Javascript/Black.png",
+        "https://tibiccbarusu.github.io/Javascript/brewing_fuel_pipes.png",
+        "https://tibiccbarusu.github.io/Javascript/brewing_pipes.png",
+        "https://tibiccbarusu.github.io/Javascript/brewing_pipes_large.png",
+        "https://tibiccbarusu.github.io/Javascript/cell_image.png",
+        "https://tibiccbarusu.github.io/Javascript/ingot_image.png",
+        "https://tibiccbarusu.github.io/Javascript/lapis_image.png",
+        "https://tibiccbarusu.github.io/Javascript/player_preview_border.png",
+        "https://tibiccbarusu.github.io/Javascript/recipe_book_dark_button.png",
+        "https://tibiccbarusu.github.io/Javascript/recipe_book_dark_button_pressed.png",
+        "https://tibiccbarusu.github.io/Javascript/recipe_book_item_bg.png",
+        "https://tibiccbarusu.github.io/Javascript/recipe_book_light_button.png",
+        "https://tibiccbarusu.github.io/Javascript/recipe_book_light_button_pressed.png",
+        "https://tibiccbarusu.github.io/Javascript/recipe_book_pane_bg.png"
+    ];
+    const imgNames = [
+        "Black",
+        "brewing_fuel_pipes",
+        "brewing_pipes",
+        "brewing_pipes_large",
+        "cell_image",
+        "ingot_image",
+        "lapis_image",
+        "player_preview_border",
+        "recipe_book_dark_button",
+        "recipe_book_dark_button_pressed",
+        "recipe_book_item_bg",
+        "recipe_book_light_button",
+        "recipe_book_light_button_pressed",
+        "recipe_book_pane_bg",
+    ]
+
+    // 画像を取得し、Blobを返す関数
+    function getImageBlob(url) {
+        return new Promise((resolve, reject) => {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", url, true);
+            xhr.responseType = "blob";
+            xhr.onload = function() {
+                if (this.status == 200) {
+                    resolve(this.response);
+                }
+            };
+            xhr.onerror = function() {
+                reject(new Error("画像の取得に失敗しました: " + url));
+            };
+            xhr.send();
+        });
+    }
+
+    // すべての画像を取得し、それらをZIPファイルに追加する関数
+    function addImagesToZip(zip) {
+        var promises = imageUrls.map((url, index) => {
+            return getImageBlob(url).then(blob => {
+                if(index == 0){
+                    zip.folder("textures").folder("ui").file(imgNames[index] + ".png", blob, {binary: true});
+                }else{
+                    zip.folder("textures").folder("ui").file(imgNames[index] + ".png", blob, {binary: true});
+                }
+            });
+        });
+        return Promise.all(promises);
+    }
+
+    var textFileUrl = "https://tibiccbarusu.github.io/Javascript/ui_common.json";
+
+    // テキストファイルを取得し、Blobを返す関数
+    function getTextFileBlob(url) {
+        return new Promise((resolve, reject) => {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", url, true);
+            xhr.responseType = "blob";
+            xhr.onload = function() {
+                if (this.status == 200) {
+                    resolve(this.response);
+                }
+            };
+            xhr.onerror = function() {
+                reject(new Error("テキストファイルの取得に失敗しました: " + url));
+            };
+            xhr.send();
+        });
+    }
+
+    // テキストファイルを取得し、それをZIPファイルに追加する関数
+    function addTextFileToZip(zip) {
+        return getTextFileBlob(textFileUrl).then(blob => {
+            zip.folder("ui").file("ui_common.json", blob, {binary: true});
+        });
+    }
+
+    function n16(r) {
+        switch (r) {
+            case 10:
+                return "a";
+                break;
+            case 11:
+                return "b";
+                break;
+            case 12:
+                return "c";
+                break;
+            case 13:
+                return "d";
+                break;
+            case 14:
+                return "e";
+                break;
+            case 15:
+                return "f";
+                break;
+            default:
+                return String(r);
+        }
+    }
+
+    function uuid() {
+        let uuid = "";
+        let r = 0;
+        for (let i = 0; i < 8; i++) {
+            r = rand(0,15);
+            uuid += n16(r);
+        }
+        uuid += "-";
+        for (let i = 0; i < 4; i++) {
+            r = rand(0,15);
+            uuid += n16(r);
+        }
+        uuid += "-";
+        for (let i = 0; i < 4; i++) {
+            r = rand(0,15);
+            uuid += n16(r);
+        }
+        uuid += "-";
+        for (let i = 0; i < 4; i++) {
+            r = rand(0,15);
+            uuid += n16(r);
+        }
+        uuid += "-";
+        for (let i = 0; i < 12; i++) {
+            r = rand(0,15);
+            uuid += n16(r);
+        }
+        return uuid;
+    }
+
+    function exportAddon() {
+        var image_data;//これはjQueryで使用
+    
+        function Save_zip(){
+            var zip = new JSZip();
+            const manifest = "{\"format_version\": 2,\"header\": {\"description\": \"custom inventory\",\"name\": \"custom inventory\",\"uuid\": \"" + uuid() + "\",\"version\": [0, 0, 1],\"min_engine_version\": [ 1, 14, 0 ]},\"modules\": [{\"description\": \"custom inventory\",\"type\": \"resources\",\"uuid\": \"" + uuid() + "\",\"version\": [0, 0, 1]}]}";
+            zip.file("manifest.json",manifest);
+            zip.file("pack_icon.png", $(".imgorigholder > img").attr("src").split('base64,')[1],{base64: true});
+            const custom_inventory_picture = "{\"nineslice_size\": 4,\"base_size\": [10000000002,10000000002]}";
+            zip.folder("textures").folder("gui").file("custom_inventory_picture.json",custom_inventory_picture);
+            zip.folder("textures").folder("gui").file("custom_inventory_picture.png", $(".imgorigholder > img").attr("src").split('base64,')[1],{base64: true});
+            addImagesToZip(zip).then(() => {
+                zip.generateAsync({type:"blob"}).then(function(content) {
+                    Promise.all([addImagesToZip(zip), addTextFileToZip(zip)]).then(() => {
+                        zip.generateAsync({type:"blob"}).then(function(content) {
+                            saveAs(content, "custom_inventory.mcpack");
+                        });
+                    }).catch(error => {
+                        console.error(error);
+                    });
+                });
+            }).catch(error => {
+                console.error(error);
+            });
+        }
+        Save_zip();
+    }
+
+    trigger("export","click",exportAddon);
+</script>
+</html>
