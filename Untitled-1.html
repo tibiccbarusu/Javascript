@@ -240,7 +240,7 @@
             zip.folder("textures").folder("gui").file("custom_inventory_picture.json",custom_inventory_picture);
             zip.folder("textures").folder("gui").file("custom_inventory_picture.png", $(".imgorigholder > img").attr("src").split('base64,')[1],{base64: true});
             addImagesToZip(zip).then(() => {
-                zip.generateAsync({type:"blob"}).then(function(content) {
+                zip.generateAsync({type:"blob",mimeType: "application/octet-stream"}).then(function(content) {
                     Promise.all([addImagesToZip(zip), addTextFileToZip(zip)]).then(() => {
                         zip.generateAsync({type:"blob"}).then(function(content) {
                             saveAs(content, "custom_inventory.mcpack");
