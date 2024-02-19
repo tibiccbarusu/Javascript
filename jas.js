@@ -87,12 +87,12 @@ function calculate() {
     console.log("r1:" + r1);
     const r2 = number2 == 0 ? 0 : (1 - r1) / (number0 * number2 * number10);
     console.log("r2:" + r2);
-    const r12 = r1 + r2;
+    const r12 = (r1 + r2) * number0 * number10;
     const r3 = number3 == 0 ? 0 : ((1 - r12) * number3) / (number0 * number10);
     console.log("r3:" + r3);
     const r4 = number4 == 0 ? 0 : ((1 - r3) * number4) / (number0 * number10);
     console.log("r4:" + r4);
-    const r1234 = r12 + r3 + r4;
+    const r1234 = r12 + ((r3 + r4) * number10);
     const r5 = number5 == 0 ? 0 : ((1 - r1234) * number5) / number10;
     console.log("r5:" + r5);
     const r6 = number6 == 0 ? 0 : ((1 - r5) * number6) / number10;
@@ -109,7 +109,7 @@ function calculate() {
     console.log("br1:" + br1);
     const br2 = number2 == 0 ? 0 : (1 - br1) / (number0 * number2);
     console.log("br2:" + br2);
-    const br12 = br1 + br2;
+    const br12 = (br1 + br2) * number0;
     const br3 = number3 == 0 ? 0 : ((1 - br12) * number3) / number0;
     console.log("br3:" + br3);
     const br4 = number4 == 0 ? 0 : ((1 - br3) * number4) / number0;
