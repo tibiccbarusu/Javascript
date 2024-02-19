@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>遊戯王カード排出率計算器</title>
+</head>
+<body>
+    <!--データ入力箇所-->
+    <div>
+        <div>
+            ※カードが被らない前提で計算しています
+            <br>
+            ※その他の入力欄は0でかまいません
+            <br>
+            ※NR等の計算をする場合は入力してください
+        </div>
+        <br>
+        <!--排出率-->
+        <div>
+            <div>
+                排出率
+            </div>
+            <br>
+            <!--カートン-->
+            <div>
+                <div>
+                    1カートン何BOX？
+                    <br>
+                    ※基本12か24
+                </div>
+                <label>
+                    BOX数:<input id="number0" type="number" value="0" min="0"/>箱
+                </label>
+            </div>
+            <br>
+            <!--結束/誇り-->
+            <div>
+                <div>
+                    何カートンに1枚？
+                </div>
+                <label>
+                    結束/誇り:<input id="number1" type="number" value="0" min="0"/>カートン
+                </label>
+                <br>
+                <label>
+                    その他1:<input id="number2" type="number" value="0" min="0"/>カートン
+                </label>
+            </div>
+            <br>
+            <!--プリシク/QC-->
+            <div>
+                <div>
+                    1カートンに何枚？
+                </div>
+                <label>
+                    プリシク/QC:<input id="number3" type="number" value="0" min="0"/>枚
+                </label>
+                <br>
+                <label>
+                    その他2:<input id="number4" type="number" value="0" min="0"/>枚
+                </label>
+            </div>
+            <br>
+            <!--シク,アル,UR,SR-->
+            <div>
+                <div>
+                    1BOXに何枚？
+                </div>
+                <label>
+                    シク:<input id="number5" type="number" value="0" min="0"/>枚
+                </label>
+                <br>
+                <label>
+                    アル:<input id="number6" type="number" value="0" min="0"/>枚
+                </label>
+                <br>
+                <label>
+                    UR:<input id="number7" type="number" value="0" min="0"/>枚
+                </label>
+                <br>
+                <label>
+                    SR:<input id="number8" type="number" value="0" min="0"/>枚
+                </label>
+                <br>
+                <label>
+                    その他3:<input id="number9" type="number" value="0" min="0"/>枚
+                </label>
+            </div>
+        </div>
+        <br>
+        <br>
+        <!--BOXデータ-->
+        <div>
+            <div>
+                BOXデータ
+            </div>
+            <br>
+            <!--パック数-->
+            <div>
+                <div>
+                    1BOXに何パック？
+                </div>
+                <label>
+                    パック数:<input id="number10" type="number" value="0" min="0"/>パック
+                </label>
+            </div>
+            <!--URの種類-->
+            <div>
+                <div>
+                    URは何種類？
+                </div>
+                <label>
+                    UR:<input id="number11" type="number" value="0" min="0"/>種類
+                </label>
+            </div>
+            <br>
+            <!--SRの種類-->
+            <div>
+                <div>
+                    SRは何種類？
+                </div>
+                <label>
+                    SR:<input id="number12" type="number" value="0" min="0"/>種類
+                </label>
+            </div>
+            <br>
+            <!--その他3の種類-->
+            <div>
+                <div>
+                    その他3は何種類？
+                </div>
+                <label>
+                    その他3:<input id="number13" type="number" value="0" min="0"/>種類
+                </label>
+            </div>
+        </div>
+        <br>
+        <br>
+        <!--計算ボタン-->
+        <div>
+            <button id="cal">計算</button>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <!--データ表示場所-->
+    <div>
+        <!--1パック-->
+        <div>
+            1パック剥いて出る確率(1.0 = 100%, 0.1 = 10%, 0.01 = 1%)
+        </div>
+        <br>
+        <div>
+            <div>
+                結束/誇り:<span id="d1"></span>
+            </div>
+            <div>
+                その他1:<span id="d2"></span>
+            </div>
+            <div>
+                プリシク/QC:<span id="d3"></span>
+            </div>
+            <div>
+                その他2:<span id="d4"></span>
+            </div>
+            <div>
+                シク:<span id="d5"></span>
+            </div>
+            <div>
+                アル:<span id="d6"></span>
+            </div>
+            <div>
+                UR:<span id="d7"></span>
+            </div>
+            <div>
+                SR:<span id="d8"></span>
+            </div>
+            <div>
+                その他3:<span id="d9"></span>
+            </div>
+        </div>
+        <br>
+        <!--1BOX-->
+        <div>
+            1BOX開封して目当てのカード1種類が出る確率(1.0 = 100%, 0.1 = 10%, 0.01 = 1%)
+            <br>
+            ※もともとのレアリティがSRやURのアルティメット以上も含みます
+        </div>
+        <br>
+        <div>
+            <div>
+                UR:<span id="d10"></span>
+            </div>
+            <div>
+                SR:<span id="d11"></span>
+            </div>
+            <div>
+                その他3:<span id="d12"></span>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="jas.js"></script>
+</html>
