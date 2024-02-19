@@ -127,9 +127,9 @@ function calculate() {
     console.log("br9:" + br9);
     const br123456789 = br1234 + br5 + br6 + br7 + br8 + br9;
     console.log("br123456789:" + br123456789);
-    const n1 = number11 == 0 ? 0 : ((br3 * (number11 / (number11 + number12))) + br5 + br6 + br7) / number11;
+    const n1 = number11 == 0 ? 0 : ((br3 * (number11 / (number11 + number12))) + (br5 * (number11 / (number11 + number12))) + br6 + br7) / number11;
     console.log("n1:" + n1);
-    const n2 = number12 == 0 ? 0 : ((br3 * (number12 / (number11 + number12))) + br8) / number12;
+    const n2 = number12 == 0 ? 0 : ((br3 * (number12 / (number11 + number12))) + (br5 * (number12 / (number11 + number12))) + br8) / number12;
     console.log("n2:" + n2);
     const n3 = number13 == 0 ? 0 : br9 / number13;
     console.log("n3:" + n3);
