@@ -217,7 +217,7 @@ function test() {
             text = "その他3";
             break;
         case 9:
-            text = "それ以外(R等)";
+            text = "それ以外(Rなど)";
             break;
     }
     console.log(text);
