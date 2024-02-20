@@ -133,9 +133,9 @@ function calculate() {
     console.log("n2:" + n2);
     const n3 = br4;
     console.log("n3:" + n3);
-    const n4 = number11 == 0 ? 0 : ((br3 * (number11 / (number11 + number12))) + br5 + br6 + br7) / number11;
+    const n4 = number11 == 0 ? 0 : ((br3 * (number11 / (number11 + number12))) + (br5 * (number11 / (number11 + number12))) + br6 + br7) / number11;
     console.log("n4:" + n4);
-    const n5 = number12 == 0 ? 0 : ((br3 * (number12 / (number11 + number12))) + br8) / number12;
+    const n5 = number12 == 0 ? 0 : ((br3 * (number12 / (number11 + number12))) + (br5 * (number12 / (number11 + number12))) + br8) / number12;
     console.log("n5:" + n5);
     const n6 = number13 == 0 ? 0 : br9 / number13;
     console.log("n6:" + n6);
