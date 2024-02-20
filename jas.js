@@ -85,34 +85,34 @@ function calculate() {
     console.log("number13:" + number13);
     const r1 = number1 == 0 ? 0 : 1 / (number0 * number1 * number10);
     console.log("r1:" + r1);
-    const r2 = number2 == 0 ? 0 : (1 - r1) / (number0 * number2 * number10);
+    const r2 = number2 == 0 ? 0 : 1 / (number0 * number2 * number10);
     console.log("r2:" + r2);
-    const r12 = (r1 + r2) * number0 * number10;
-    const r3 = number3 == 0 ? 0 : ((1 - r12) * number3) / (number0 * number10);
+    const r12 = r1 + r2;
+    const r3 = number3 == 0 ? 0 : number3 / (number0 * number10);
     console.log("r3:" + r3);
-    const r4 = number4 == 0 ? 0 : ((1 - r3) * number4) / (number0 * number10);
+    const r4 = number4 == 0 ? 0 : number4 / (number0 * number10);
     console.log("r4:" + r4);
-    const r1234 = r12 + ((r3 + r4) * number10);
-    const r5 = number5 == 0 ? 0 : ((1 - r1234) * number5) / number10;
+    const r1234 = r12 + r3 + r4;
+    const r5 = number5 == 0 ? 0 : (number5 / number10) - r1234;
     console.log("r5:" + r5);
-    const r6 = number6 == 0 ? 0 : ((1 - r5) * number6) / number10;
+    const r6 = number6 == 0 ? 0 : number6 / number10;
     console.log("r6:" + r6);
-    const r7 = number7 == 0 ? 0 : ((1 - r6) * number7) / number10;
+    const r7 = number7 == 0 ? 0 : number7 / number10;
     console.log("r7:" + r7);
-    const r8 = number8 == 0 ? 0 : ((1 - r7) * number8) / number10;
+    const r8 = number8 == 0 ? 0 : number8 / number10;
     console.log("r8:" + r8);
-    const r9 = number9 == 0 ? 0 : ((1 - r8) * number9) / number10;
+    const r9 = number9 == 0 ? 0 : number9 / number10;
     console.log("r9:" + r9);
     const r123456789 = r1234 + r5 + r6 + r7 + r8 + r9;
     console.log("r123456789:" + r123456789);
     const br1 = number1 == 0 ? 0 : 1 / (number0 * number1);
     console.log("br1:" + br1);
-    const br2 = number2 == 0 ? 0 : (1 - br1) / (number0 * number2);
+    const br2 = number2 == 0 ? 0 : 1 / (number0 * number2);
     console.log("br2:" + br2);
-    const br12 = (br1 + br2) * number0;
-    const br3 = number3 == 0 ? 0 : ((1 - br12) * number3) / number0;
+    const br12 = br1 + br2;
+    const br3 = number3 == 0 ? 0 :  number3 / number0;
     console.log("br3:" + br3);
-    const br4 = number4 == 0 ? 0 : ((1 - br3) * number4) / number0;
+    const br4 = number4 == 0 ? 0 : number4 / number0;
     console.log("br4:" + br4);
     const br1234 = br12 + br3 + br4;
     const br5 = number5 == 0 ? 0 : number5 - br1234;
@@ -127,9 +127,9 @@ function calculate() {
     console.log("br9:" + br9);
     const br123456789 = br1234 + br5 + br6 + br7 + br8 + br9;
     console.log("br123456789:" + br123456789);
-    const n1 = number11 == 0 ? 0 : ((br3 * (number11 / (number11 + number12))) + (br5 * (number11 / (number11 + number12))) + br6 + br7) / number11;
+    const n1 = number11 == 0 ? 0 : ((br3 * (number11 / (number11 + number12))) + br5 + br6 + br7) / number11;
     console.log("n1:" + n1);
-    const n2 = number12 == 0 ? 0 : ((br3 * (number12 / (number11 + number12))) + (br5 * (number12 / (number11 + number12))) + br8) / number12;
+    const n2 = number12 == 0 ? 0 : ((br3 * (number12 / (number11 + number12))) + br8) / number12;
     console.log("n2:" + n2);
     const n3 = number13 == 0 ? 0 : br9 / number13;
     console.log("n3:" + n3);
@@ -147,4 +147,83 @@ function calculate() {
     replaceInnerHTML("d12",n3);
 }
 
+function test() {
+    const number = new Array;
+    number[0] = parseFloat(document.getElementById("d1").textContent);
+    console.log("number[0]:" + number[0]);
+    number[1] = parseFloat(document.getElementById("d2").textContent);
+    console.log("number[1]:" + number[1]);
+    number[2] = parseFloat(document.getElementById("d3").textContent);
+    console.log("number[2]:" + number[2]);
+    number[3] = parseFloat(document.getElementById("d4").textContent);
+    console.log("number[3]:" + number[3]);
+    number[4] = parseFloat(document.getElementById("d5").textContent);
+    console.log("number[4]:" + number[4]);
+    number[5] = parseFloat(document.getElementById("d6").textContent);
+    console.log("number[5]:" + number[5]);
+    number[6] = parseFloat(document.getElementById("d7").textContent);
+    console.log("number[6]:" + number[6]);
+    number[7] = parseFloat(document.getElementById("d8").textContent);
+    console.log("number[7]:" + number[7]);
+    number[8] = parseFloat(document.getElementById("d9").textContent);
+    console.log("number[8]:" + number[8]);
+    let p = number[0];
+    let r = 0;
+    const n = 1000000000000000;
+    const random = (rand(0,n)) / n;
+    console.log("random:" + random);
+    for (let i = 0; i < 9; i++) {
+        console.log("p:" + p);
+        console.log("r:" + r);
+        if (p >= random) {
+            r = i;
+            break;
+        } else {
+            if (i == 8) {
+                r = i + 1;
+                break;
+            } else {
+                p += number[i + 1];
+            }
+        }
+    }
+    let text;
+    switch (r) {
+        case 0:
+            text = "結束/誇り";
+            break;
+        case 1:
+            text = "その他1";
+            break;
+        case 2:
+            text = "プリシク/QC";
+            break;
+        case 3:
+            text = "その他2";
+            break;
+        case 4:
+            text = "シク";
+            break;
+        case 5:
+            text = "アル";
+            break;
+        case 6:
+            text = "UR";
+            break;
+        case 7:
+            text = "SR";
+            break;
+        case 8:
+            text = "その他3";
+            break;
+        case 9:
+            text = "それ以外";
+            break;
+    }
+    console.log(text);
+    replaceInnerHTML("result",text)
+
+}
+
 trigger("cal","click",calculate);
+trigger("test","click",test);
