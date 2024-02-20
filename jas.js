@@ -127,12 +127,18 @@ function calculate() {
     console.log("br9:" + br9);
     const br123456789 = br1234 + br5 + br6 + br7 + br8 + br9;
     console.log("br123456789:" + br123456789);
-    const n1 = number11 == 0 ? 0 : ((br3 * (number11 / (number11 + number12))) + br5 + br6 + br7) / number11;
+    const n1 = br1;
     console.log("n1:" + n1);
-    const n2 = number12 == 0 ? 0 : ((br3 * (number12 / (number11 + number12))) + br8) / number12;
+    const n2 = br2;
     console.log("n2:" + n2);
-    const n3 = number13 == 0 ? 0 : br9 / number13;
+    const n3 = br4;
     console.log("n3:" + n3);
+    const n4 = number11 == 0 ? 0 : ((br3 * (number11 / (number11 + number12))) + br5 + br6 + br7) / number11;
+    console.log("n4:" + n4);
+    const n5 = number12 == 0 ? 0 : ((br3 * (number12 / (number11 + number12))) + br8) / number12;
+    console.log("n5:" + n5);
+    const n6 = number13 == 0 ? 0 : br9 / number13;
+    console.log("n6:" + n6);
     replaceInnerHTML("d1",r1);
     replaceInnerHTML("d2",r2);
     replaceInnerHTML("d3",r3);
@@ -145,6 +151,9 @@ function calculate() {
     replaceInnerHTML("d10",n1);
     replaceInnerHTML("d11",n2);
     replaceInnerHTML("d12",n3);
+    replaceInnerHTML("d13",n4);
+    replaceInnerHTML("d14",n5);
+    replaceInnerHTML("d15",n6);
 }
 
 function test() {
