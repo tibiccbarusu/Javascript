@@ -1,5 +1,11 @@
 "use strict"
 
+function lastDay(x) {
+    const id = document.getElementById(x);
+    const day = "2024/04/09/02:54"
+    id.innerHTML = day;
+}
+
 function photoData(x,n,k) {
     const id = document.getElementById(x);
     const photoDataList = new Array();
@@ -634,10 +640,10 @@ function photoData(x,n,k) {
     photoDataList[5310] = {"name" : "麒麟フォト", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/377637\">p5310</a>"};
     photoDataList[5311] = {"name" : "エジプトガンフォト", "errorType" : 2, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/714329\">p5311</a>"};  
     //育成用フォト
-    photoDataList[6001] = {"name" : "輝きの欠片フォト☆4", "errorType" : 2, "link" : "<a href=\"#p6001\">p6001</a>"};
-    photoDataList[6002] = {"name" : "輝きの欠片フォト☆3", "errorType" : 2, "link" : "<a href=\"#p6002\">p6002</a>"};
-    photoDataList[6003] = {"name" : "ジャパまんフォト☆3", "errorType" : 2, "link" : "<a href=\"#p6003\">p6003</a>"};
-    photoDataList[6004] = {"name" : "ジャパまんフォト☆2", "errorType" : 2, "link" : "<a href=\"#p6004\">p6004</a>"};
+    photoDataList[6001] = {"name" : "輝きの欠片フォト☆4", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/842763\">p6001</a>"};
+    photoDataList[6002] = {"name" : "輝きの欠片フォト☆3", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/842764\">p6002</a>"};
+    photoDataList[6003] = {"name" : "ジャパまんフォト☆3", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/842765\">p6003</a>"};
+    photoDataList[6004] = {"name" : "ジャパまんフォト☆2", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/842766\">p6004</a>"};
     if(k == "errorType") {
         switch(photoDataList[n][k]) {
             case 0:
