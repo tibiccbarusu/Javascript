@@ -2,7 +2,7 @@
 
 function lastDay(x) {
     const id = document.getElementById(x);
-    const day = "2024/04/09/02:54";
+    const day = "2024/04/10/23:19";
     id.innerHTML = day;
 }
 
@@ -314,7 +314,7 @@ function photoData(x,n,k) {
     photoDataList[4152] = {"name" : "リボンえらび", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/806426\">p4152</a>"};
     photoDataList[4153] = {"name" : "あたしのけっさく！", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/808242\">p4153</a>"};
     photoDataList[4154] = {"name" : "勝ったのは…？", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/812126\">p4154</a>"};
-    photoDataList[4155] = {"name" : "うつくしさを映す", "errorType" : 2, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/812135\">p4155</a>"};
+    photoDataList[4155] = {"name" : "うつくしさを映す", "errorType" : 1, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/812135\">p4155</a>"};
     photoDataList[4156] = {"name" : "タケノコみつけました～♪", "errorType" : 1, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/814979\">p4156</a>"};
     photoDataList[4157] = {"name" : "隊長さんお手製の！", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/818008\">p4157</a>"};
     photoDataList[4158] = {"name" : "セカイをもっとカザって", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/818577\">p4158</a>"};
