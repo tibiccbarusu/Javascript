@@ -5,6 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="kf3fjs.js"></script>
+    <style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 400px;
+    }
+
+    .image-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .image-container img {
+      width: 100%;
+      height: auto;
+      cursor: pointer;
+    }
+
+    #message {
+      color: red;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
     <h3>
@@ -38,6 +78,14 @@
             </li>
             <li>
                 <a href="#s6">育成用フォト</a>
+            </li>
+            <li>
+                <div>
+                    フレンズ(作成中)
+                </div>
+            </li>
+            <li>
+                <a href="#s7">セルリアン名一覧</a>
             </li>
         </ul>
     </div>
@@ -3459,6 +3507,23 @@
                 </tbody>
             </table>
         </div>
+    </div>
+    <div id="s7">
+        このページを閲覧するには認証を行ってください。
+        <br>
+        <div class="modal" id="modal">
+    <div class="modal-content">
+      <h3>認証画面</h3>
+      <div>けものフレンズ2話に登場したフレンズをすべて選択してください。</div>
+      <br>
+      <div class="image-container"></div>
+      <button onclick="verifySelections()">決定</button>
+      <button onclick="cancelAuthentication()">キャンセル</button>
+      <br>
+      <span id="message"></span>
+    </div>
+  </div>
+        <button onclick="startAuthentication()">認証を開始する</button>
     </div>
 </body>
 </html>
