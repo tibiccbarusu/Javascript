@@ -2,7 +2,7 @@
 
 function lastDay(x) {
     const id = document.getElementById(x);
-    const day = "2024/04/10/23:19";
+    const day = "2024/04/12/10:54";
     id.innerHTML = day;
 }
 
@@ -22,7 +22,7 @@ function photoData(x,n,k) {
     photoDataList[2001] = {"name" : "お気に入りの木陰", "errorType" : 1, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/132180\">p2001</a>"};
     photoDataList[2002] = {"name" : "だいじなメガネ", "errorType" : 1, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/132182\">p2002</a>"};
     photoDataList[2003] = {"name" : "パークスタッフ証", "errorType" : 1, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/132185\">p2003</a>"};
-    photoDataList[2004] = {"name" : "私たちのレッスン場！", "errorType" : 2, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/132192\">p2004</a>"};
+    photoDataList[2004] = {"name" : "私たちのレッスン場！", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/132192\">p2004</a>"};
     photoDataList[2005] = {"name" : "カフェタイム", "errorType" : 1, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/132392\">p2005</a>"};
     photoDataList[2006] = {"name" : "スタッフカー3号車", "errorType" : 1, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/132400\">p2006</a>"};
     photoDataList[2007] = {"name" : "スタッフパス", "errorType" : 1, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/132409\">p2007</a>"};
@@ -327,6 +327,7 @@ function photoData(x,n,k) {
     photoDataList[4165] = {"name" : "とくべつステージだよ！", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/836549\">p4165</a>"};
     photoDataList[4166] = {"name" : "最強のトリは…！？", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/839461\">p4166</a>"};
     photoDataList[4167] = {"name" : "すながくれのヒーロー", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/842424\">p4167</a>"};
+    photoDataList[4168] = {"name" : "たまには、ね", "errorType" : 1, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/843366\">p4168</a>"};
     //ワイルドフォト
     photoDataList[5001] = {"name" : "G・ロードランナーフォト", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/156515\">p5001</a>"};
     photoDataList[5002] = {"name" : "N・ハイランドワイルドドッグフォト", "errorType" : 1, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/777456\">p5002</a>"};
@@ -638,7 +639,8 @@ function photoData(x,n,k) {
     photoDataList[5308] = {"name" : "火の鳥フォト", "errorType" : 3, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/230847\">p5308</a>"};
     photoDataList[5309] = {"name" : "真・青龍フォト", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/839465\">p5309</a>"};//後日実装
     photoDataList[5310] = {"name" : "麒麟フォト", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/377637\">p5310</a>"};
-    photoDataList[5311] = {"name" : "エジプトガンフォト", "errorType" : 2, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/714329\">p5311</a>"};  
+    photoDataList[5311] = {"name" : "エジプトガンフォト", "errorType" : 2, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/714329\">p5311</a>"};
+    photoDataList[5312] = {"name" : "アリゲーターフォト", "errorType" : 2, "link" : "<a href=\"\">p5312</a>"};
     //育成用フォト
     photoDataList[6001] = {"name" : "輝きの欠片フォト☆4", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/842763\">p6001</a>"};
     photoDataList[6002] = {"name" : "輝きの欠片フォト☆3", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/842764\">p6002</a>"};
