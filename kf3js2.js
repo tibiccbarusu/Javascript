@@ -30,7 +30,7 @@ const images = [
   ];
 
   // 正しい画像のインデックスを定義
-  const correctSelections = [5,6,7,9,10,11,13,14];
+  const correctSelections = [5,6,7,9,10,11,13,14,17,18,19,20];
 
   // 選択した画像のインデックスを格納する配列
   let selectedImages = [];
