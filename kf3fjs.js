@@ -2,7 +2,7 @@
 
 function lastDay(x) {
     const id = document.getElementById(x);
-    const day = "2024/04/13/11:21";
+    const day = "2024/04/13/12:28";
     id.innerHTML = day;
 }
 
@@ -327,7 +327,7 @@ function photoData(x,n,k) {
     photoDataList[4165] = {"name" : "とくべつステージだよ！", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/836549\">p4165</a>"};
     photoDataList[4166] = {"name" : "最強のトリは…！？", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/839461\">p4166</a>"};
     photoDataList[4167] = {"name" : "すながくれのヒーロー", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/842424\">p4167</a>"};
-    photoDataList[4168] = {"name" : "たまには、ね", "errorType" : 1, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/843366\">p4168</a>"};
+    photoDataList[4168] = {"name" : "たまには、ね", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/843366\">p4168</a>"};
     //ワイルドフォト
     photoDataList[5001] = {"name" : "G・ロードランナーフォト", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/156515\">p5001</a>"};
     photoDataList[5002] = {"name" : "N・ハイランドワイルドドッグフォト", "errorType" : 1, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/777456\">p5002</a>"};
