@@ -110,7 +110,7 @@ function photoData(x,n,k) {
     photoDataList[3065] = {"name" : "ハロウィン・サプライズ！", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/296744\">p3065</a>"};
     photoDataList[3066] = {"name" : "秘・湯めぐり！", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/303775\">p3066</a>"};
     photoDataList[3067] = {"name" : "おそろいなのだ！", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/306959\">p3067</a>"};
-    photoDataList[3068] = {"name" : "ねらいをさだめて", "errorType" : 2, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/318298\">p3068</a>"};
+    photoDataList[3068] = {"name" : "ねらいをさだめて", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/318298\">p3068</a>"};
     photoDataList[3069] = {"name" : "チョコレート・トラップ", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/327708\">p3069</a>"};
     photoDataList[3070] = {"name" : "ぶゆうでん！", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/332657\">p3070</a>"};
     photoDataList[3071] = {"name" : "パンキッシュ・ビート", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/334726\">p3071</a>"};
@@ -234,7 +234,7 @@ function photoData(x,n,k) {
     photoDataList[4072] = {"name" : "なつまつり", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/276833\">p4072</a>"};
     photoDataList[4073] = {"name" : "タマちゃんスマイル！", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/278089\">p4073</a>"};
     photoDataList[4074] = {"name" : "くものうえのけしき", "errorType" : 1, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/282626\">p4074</a>"};
-    photoDataList[4075] = {"name" : "ほっぷ、すてっぷ", "errorType" : 2, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/283904\">p4075</a>"};
+    photoDataList[4075] = {"name" : "ほっぷ、すてっぷ", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/283904\">p4075</a>"};
     photoDataList[4076] = {"name" : "ゆらゆらゆれて", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/285955\">p4076</a>"};
     photoDataList[4077] = {"name" : "ワンツーステップ", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/288514\">p4077</a>"};
     photoDataList[4078] = {"name" : "あなたにあげるわ", "errorType" : 0, "link" : "<a href=\"https://gamerch.com/kemonofriends3/entry/290954\">p4078</a>"};
