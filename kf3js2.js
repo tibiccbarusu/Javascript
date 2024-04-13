@@ -90,9 +90,9 @@ const images = [
     const sortedCorrect = correctSelections.sort();
 
     if (JSON.stringify(sortedSelected) === JSON.stringify(sortedCorrect)) {
-      alert("このページを閲覧する権限がありません。");
+      window.location.href = 'https://tibiccbarusu.github.io/Javascript/kf3listpage.html';
     } else {
-      showMessage('Authentication failed!');
+      showMessage('認証に失敗しました。');
     }
   }
 
