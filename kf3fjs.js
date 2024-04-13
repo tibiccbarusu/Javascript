@@ -2,7 +2,7 @@
 
 function lastDay(x) {
     const id = document.getElementById(x);
-    const day = "2024/04/13/09:08";
+    const day = "2024/04/13/09:32";
     id.innerHTML = day;
 }
 
