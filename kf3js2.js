@@ -1,6 +1,6 @@
 "use strict"
 
-// 画像の情報を定義5*5
+// 画像の情報を定義
 const images = [
     "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9pSUtKQ2NidS5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
     "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9WQUN1RjJlMC5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIn19",
