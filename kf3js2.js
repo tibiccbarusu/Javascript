@@ -90,7 +90,7 @@ const images = [
     const sortedCorrect = correctSelections.sort();
 
     if (JSON.stringify(sortedSelected) === JSON.stringify(sortedCorrect)) {
-      window.location.href = 'https://tibiccbarusu.github.io/Javascript/kf3listpage.html';
+      window.location.href = 'https://gamerch.com/kemonofriends3/';
     } else {
       showMessage('認証に失敗しました。');
     }
