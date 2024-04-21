@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,22 +7,19 @@
 <style>
     /* 新たに追加されたCSS */
 
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
     .container {
         justify-content: space-around;
         margin-top: 20px;
         display: grid;
-        grid-template-columns: repeat(2, 1fr); /* 2列のグリッドを作成 */
+        grid-template-columns: repeat(5, 1fr); /* 2列のグリッドを作成 */
         gap: 20px; /* 枠間の間隔 */
     }
+    
+    @media screen and (max-width: 768px) {
+    .container {
+        grid-template-columns: repeat(1, 1fr); /* スマートフォンでは1列に変更 */
+    }
+}
     .frame {
         border: 2px solid black;
         width: 200px;
@@ -121,6 +118,9 @@
     <div class="frame" id="frame8">
         <div class="frame-title">test</div>
     </div>
+    <div class="frame" id="frame9">
+        <div class="frame-title">test</div>
+    </div>
 </div>
 
 <!-- シード生成結果表示箇所、コピーボタンを追加 -->
@@ -164,6 +164,10 @@ function createImg(src) {
     img.draggable = true;
     assignImageId(img); // 画像要素に一意のIDを割り当てる
     img.addEventListener('dragstart', dragStart);
+    // タッチイベントを追加
+    img.addEventListener('touchstart', touchStart);
+    img.addEventListener('touchmove', touchMove);
+    img.addEventListener('touchend', touchEnd);
     return img;
 }
 
@@ -177,66 +181,106 @@ function assignImageId(img) {
 // 画像要素のカウンター
 let imageCounter = 1;
 
-    // ドラッグ開始時の処理
-    function dragStart(event) {
-        event.dataTransfer.setData('text/plain', event.target.id);
-    }
+// ドラッグ開始時の処理
+function dragStart(event) {
+    event.dataTransfer.setData('text/plain', event.target.id);
+}
 
-    // ドラッグオーバー時の処理
-    function dragOver(event) {
-        event.preventDefault();
-    }
+// ドラッグオーバー時の処理
+function dragOver(event) {
+    event.preventDefault();
+}
 
-    // ドロップ時の処理
-    function drop(event) {
-        event.preventDefault();
-        const data = event.dataTransfer.getData('text/plain');
-        const targetFrame = event.target.closest('.frame');
-        try {
-            if (!targetFrame) {
-                throw new Error('Drop target is not a frame.');
-            }
-            const img = document.getElementById(data);
-            if (!img || img.tagName !== 'IMG') {
-                throw new Error('Invalid dragged element.');
-            }
-            const sourceFrame = img.parentNode;
-            if (sourceFrame !== targetFrame) {
-                targetFrame.appendChild(img); // 元の画像を移動先の枠に追加
-            }
-            sortImages(targetFrame);
-        } catch (error) {
-            console.error('An error occurred during drop:', error);
+// ドロップ時の処理
+function drop(event) {
+    event.preventDefault();
+    const data = event.dataTransfer.getData('text/plain');
+    const targetFrame = event.target.closest('.frame');
+    try {
+        if (!targetFrame) {
+            throw new Error('Drop target is not a frame.');
         }
+        const img = document.getElementById(data);
+        if (!img || img.tagName !== 'IMG') {
+            throw new Error('Invalid dragged element.');
+        }
+        const sourceFrame = img.parentNode;
+        if (sourceFrame !== targetFrame) {
+            targetFrame.appendChild(img); // 元の画像を移動先の枠に追加
+        }
+        sortImages(targetFrame);
+    } catch (error) {
+        console.error('An error occurred during drop:', error);
     }
+}
 
-    // 画像を枠内で並び替える関数
-    function sortImages(frame) {
-        try {
-            const images = frame.querySelectorAll('img');
-            images.forEach((img, index) => {
-                frame.appendChild(img);
+// タッチ開始時の処理
+function touchStart(event) {
+    event.preventDefault();
+    const touch = event.touches[0];
+    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (!target || target.tagName !== 'IMG') return;
+    event.dataTransfer.setData('text/plain', target.id);
+}
+
+// タッチ移動時の処理
+function touchMove(event) {
+    event.preventDefault();
+}
+
+// タッチ終了時の処理
+function touchEnd(event) {
+    event.preventDefault();
+    const touch = event.changedTouches[0];
+    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (!target || !target.closest('.frame')) return;
+    const data = event.dataTransfer.getData('text/plain');
+    const targetFrame = target.closest('.frame');
+    try {
+        if (!targetFrame) {
+            throw new Error('Drop target is not a frame.');
+        }
+        const img = document.getElementById(data);
+        if (!img || img.tagName !== 'IMG') {
+            throw new Error('Invalid dragged element.');
+        }
+        const sourceFrame = img.parentNode;
+        if (sourceFrame !== targetFrame) {
+            targetFrame.appendChild(img); // 元の画像を移動先の枠に追加
+        }
+        sortImages(targetFrame);
+    } catch (error) {
+        console.error('An error occurred during drop:', error);
+    }
+}
+
+// 画像を枠内で並び替える関数
+function sortImages(frame) {
+    try {
+        const images = frame.querySelectorAll('img');
+        images.forEach((img, index) => {
+            frame.appendChild(img);
+        });
+    } catch (error) {
+        console.error('An error occurred during sorting images:', error);
+    }
+}
+
+// リセット関数
+function resetFrames() {
+    const frames = document.querySelectorAll('.frame');
+    try {
+        frames.forEach(frame => {
+            // 画像のみを削除する
+            frame.querySelectorAll('img').forEach(img => {
+                img.parentNode.removeChild(img);
             });
-        } catch (error) {
-            console.error('An error occurred during sorting images:', error);
-        }
+        });
+        initialize();
+    } catch (error) {
+        console.error('An error occurred during reset:', error);
     }
-
-    // リセット関数
-    function resetFrames() {
-        const frames = document.querySelectorAll('.frame');
-        try {
-            frames.forEach(frame => {
-                // 画像のみを削除する
-                frame.querySelectorAll('img').forEach(img => {
-                    img.parentNode.removeChild(img);
-                });
-            });
-            initialize();
-        } catch (error) {
-            console.error('An error occurred during reset:', error);
-        }
-    }
+}
 
 // シードを生成する関数
 function generateSeed() {
