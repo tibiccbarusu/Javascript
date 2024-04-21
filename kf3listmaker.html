@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>kf3listmaker</title>
+<style>
+    /* 新たに追加されたCSS */
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .container {
+        justify-content: space-around;
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* 2列のグリッドを作成 */
+        gap: 20px; /* 枠間の間隔 */
+    }
+    .frame {
+        border: 2px solid black;
+        width: 200px;
+        height: 200px;
+        overflow-y: auto;
+        margin-bottom: 20px;
+    }
+    .frame-title {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    .frame img {
+        width: 25%;
+        cursor: pointer;
+    }
+
+    .control-container {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .seed-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    #seedOutput {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        resize: none;
+    }
+
+    #seedInput {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .button-container {
+        display: flex;
+        gap: 10px;
+    }
+
+    button {
+        padding: 10px 20px;
+        border: none;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="frame" id="startFrame">
+        <div class="frame-title">start</div>
+    </div>
+    <div class="frame" id="frame1">
+        <div class="frame-title">test</div>
+    </div>
+    <div class="frame" id="frame2">
+        <div class="frame-title">test</div>
+    </div>
+    <div class="frame" id="frame3">
+        <div class="frame-title">test</div>
+    </div>
+    <div class="frame" id="frame4">
+        <div class="frame-title">test</div>
+    </div>
+    <div class="frame" id="frame5">
+        <div class="frame-title">test</div>
+    </div>
+    <div class="frame" id="frame6">
+        <div class="frame-title">test</div>
+    </div>
+    <div class="frame" id="frame7">
+        <div class="frame-title">test</div>
+    </div>
+    <div class="frame" id="frame8">
+        <div class="frame-title">test</div>
+    </div>
+</div>
+
+<!-- シード生成結果表示箇所、コピーボタンを追加 -->
+<div class="control-container">
+    <!-- シード生成ボタン、シード適用ボタンを修正 -->
+    <div class="button-container">
+        <input type="file" id="fileInput" accept=".txt">
+        <button onclick="generateSeed()">Generate Seed</button>
+        <button onclick="applySeed()">Apply Seed</button>
+        <!-- 枠のリセットボタンは変更なし -->
+        <button onclick="resetFrames()">Reset</button>
+    </div>
+</div>
+
+<script>
+    // 以下は変更なしのコード
+
+    // 画像のファイル名を配列で定義
+    const images = [
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9Dc1BLZmFOMC5qcGciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjo0NSwiZml0IjoiY292ZXIifX19",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9Dc1BLZmFOMC5qcGciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjo0NSwiZml0IjoiY292ZXIifX19"
+    ];
+
+    // 初期化関数
+    function initialize() {
+        try {
+            const startFrame = document.getElementById('startFrame');
+            images.forEach((image, index) => {
+                const img = createImg(image);
+                startFrame.appendChild(img);
+            });
+        } catch (error) {
+            console.error('An error occurred during initialization:', error);
+        }
+    }
+
+// 画像要素を生成する関数
+function createImg(src) {
+    const img = document.createElement('img');
+    img.src = src;
+    img.draggable = true;
+    assignImageId(img); // 画像要素に一意のIDを割り当てる
+    img.addEventListener('dragstart', dragStart);
+    return img;
+}
+
+// 画像要素に一意のIDを割り当てる関数
+function assignImageId(img) {
+    // カウンターを使用して一意のIDを生成
+    const id = 'img_' + imageCounter++;
+    img.id = id;
+}
+
+// 画像要素のカウンター
+let imageCounter = 1;
+
+    // ドラッグ開始時の処理
+    function dragStart(event) {
+        event.dataTransfer.setData('text/plain', event.target.id);
+    }
+
+    // ドラッグオーバー時の処理
+    function dragOver(event) {
+        event.preventDefault();
+    }
+
+    // ドロップ時の処理
+    function drop(event) {
+        event.preventDefault();
+        const data = event.dataTransfer.getData('text/plain');
+        const targetFrame = event.target.closest('.frame');
+        try {
+            if (!targetFrame) {
+                throw new Error('Drop target is not a frame.');
+            }
+            const img = document.getElementById(data);
+            if (!img || img.tagName !== 'IMG') {
+                throw new Error('Invalid dragged element.');
+            }
+            const sourceFrame = img.parentNode;
+            if (sourceFrame !== targetFrame) {
+                targetFrame.appendChild(img); // 元の画像を移動先の枠に追加
+            }
+            sortImages(targetFrame);
+        } catch (error) {
+            console.error('An error occurred during drop:', error);
+        }
+    }
+
+    // 画像を枠内で並び替える関数
+    function sortImages(frame) {
+        try {
+            const images = frame.querySelectorAll('img');
+            images.forEach((img, index) => {
+                frame.appendChild(img);
+            });
+        } catch (error) {
+            console.error('An error occurred during sorting images:', error);
+        }
+    }
+
+    // リセット関数
+    function resetFrames() {
+        const frames = document.querySelectorAll('.frame');
+        try {
+            frames.forEach(frame => {
+                // 画像のみを削除する
+                frame.querySelectorAll('img').forEach(img => {
+                    img.parentNode.removeChild(img);
+                });
+            });
+            initialize();
+        } catch (error) {
+            console.error('An error occurred during reset:', error);
+        }
+    }
+
+// シードを生成する関数
+function generateSeed() {
+    const frames = document.querySelectorAll('.frame');
+    let seed = '';
+    frames.forEach((frame, index) => {
+        const imageSrcs = Array.from(frame.querySelectorAll('img')).map(img => img.src);
+        // HTMLファイルのURLを除外してシードを生成
+        const filteredImageSrcs = imageSrcs.filter(src => !src.includes('kf3listmaker.html'));
+        const frameSeed = filteredImageSrcs.join(',');
+        if (index !== 0) { // 最初のフレーム以外にはセミコロンを追加
+            seed += ';';
+        }
+        seed += frameSeed; // エンコードなしでシードに追加
+    });
+    // シードをテキストファイルとしてダウンロード
+    downloadSeed(seed);
+}
+
+// シードをテキストファイルとしてダウンロードする関数
+function downloadSeed(seed) {
+    const blob = new Blob([seed], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'seed.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+// シードを適用する関数
+function applySeed() {
+    try {
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
+        if (!file) {
+            alert('No file selected!');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const seed = event.target.result;
+            decodeAndApplySeed(seed); // シードを適用
+        };
+        reader.readAsText(file);
+    } catch (error) {
+        console.error('An error occurred during seed application:', error);
+    }
+}
+
+// シードをデコードして適用する関数
+function decodeAndApplySeed(seed) {
+    const decodedSeed = seed.trim();
+    console.log('Decoded seed:', decodedSeed); // デコード結果をコンソールに出力
+    const seedParts = decodedSeed.split(';');
+    const frames = document.querySelectorAll('.frame');
+    if (seedParts.length !== frames.length) { // 枠の数とシードの要素数を比較
+        alert('Invalid seed!');
+        return;
+    }
+    seedParts.forEach((frameSeed, index) => {
+        const imageSrcs = frameSeed.split(',');
+        const frame = frames[index];
+        // 画像のみを削除する
+        frame.querySelectorAll('img').forEach(img => {
+            img.parentNode.removeChild(img);
+        });
+        imageSrcs.forEach(src => {
+            const img = createImg(src);
+            frame.appendChild(img);
+        });
+        sortImages(frame);
+    });
+}
+
+    // シードをクリップボードにコピーする関数
+    function copySeed() {
+        try {
+            const seedOutput = document.getElementById('seedOutput');
+            seedOutput.select();
+            seedOutput.setSelectionRange(0, 99999); /* For mobile devices */
+            document.execCommand('copy');
+            alert('Seed copied to clipboard!');
+        } catch (error) {
+            console.error('An error occurred during seed copying:', error);
+        }
+    }
+
+    // シード入力欄をクリアする関数
+    function clearSeedInput() {
+        try {
+            const seedInput = document.getElementById('seedInput');
+            seedInput.value = '';
+        } catch (error) {
+            console.error('An error occurred while clearing seed input:', error);
+        }
+    }
+
+    // イベントリスナーの設定
+    initialize();
+    const frames = document.querySelectorAll('.frame');
+    frames.forEach(frame => {
+        frame.addEventListener('dragover', dragOver);
+        frame.addEventListener('drop', drop);
+    });
+</script>
+
+</body>
+</html>
