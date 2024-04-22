@@ -361,7 +361,7 @@ function downloadSeed(seed) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = "tier表作成サイト-ファニー属性" + "-" + Date.now() + "-" +(Math.round(Math.random() * 100000000000)) + ".txt";
+    a.download = "tier表作成サイト-ファニー属性1" + "-" + Date.now() + "-" +(Math.round(Math.random() * 100000000000)) + ".txt";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
