@@ -139,7 +139,7 @@
     // 以下は変更なしのコード
 
     // 画像のファイル名を配列で定義
-    const images = [
+    let images = [
     ];
 
 /*-------------------------------------------------------------------------------------------------*/
@@ -169,7 +169,7 @@ function addURL() {
 
 function removeURL() {
     images[images.length - 1] = "";
-    images.filter(Boolean);
+    images = images.filter(Boolean);
 }
 
 trigger("addURL","click",addURL);
