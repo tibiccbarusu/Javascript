@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>リラックス属性rank表</title>
+<style>
+    /* 新たに追加されたCSS */
+
+    .container {
+        justify-content: space-around;
+        margin-top: 1px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* 2列のグリッドを作成 */
+        gap: 1px; /* 枠間の間隔 */
+    }
+
+    @media screen and (max-width: 768px) {
+    .container {
+        grid-template-columns: repeat(1, 1fr); /* スマートフォンでは1列に変更 */
+    }
+}
+
+    .frame {
+        border: 2px solid black;
+        width: 300px;
+        height: 130px;
+        overflow-y: auto;
+        margin-bottom: 20px;
+    }
+    .frame-title {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    .frame img {
+        width: 20%;
+        cursor: pointer;
+    }
+
+    .control-container {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .seed-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    #seedOutput {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        resize: none;
+    }
+
+    #seedInput {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .button-container {
+        display: flex;
+        gap: 10px;
+    }
+
+    @media screen and (max-width: 768px) {
+    .button-container {
+        display: inline;
+    }
+}
+
+    button {
+        padding: 10px 20px;
+        border: none;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="frame" id="startFrame">
+        <div class="frame-title">初期位置</div>
+    </div>
+    <div class="frame" id="frame1">
+        <div class="frame-title">1位</div>
+    </div>
+    <div class="frame" id="frame2">
+        <div class="frame-title">2位</div>
+    </div>
+    <div class="frame" id="frame3">
+        <div class="frame-title">3位</div>
+    </div>
+    <div class="frame" id="frame4">
+        <div class="frame-title">4位</div>
+    </div>
+    <div class="frame" id="frame5">
+        <div class="frame-title">5位</div>
+    </div>
+    <div class="frame" id="frame6">
+        <div class="frame-title">6位</div>
+    </div>
+    <div class="frame" id="frame7">
+        <div class="frame-title">7位</div>
+    </div>
+    <div class="frame" id="frame8">
+        <div class="frame-title">8位</div>
+    </div>
+    <div class="frame" id="frame9">
+        <div class="frame-title">9位</div>
+    </div>
+    <div class="frame" id="frame10">
+        <div class="frame-title">10位</div>
+    </div>
+    <div class="frame" id="frame11">
+        <div class="frame-title">11位</div>
+    </div>
+    <div class="frame" id="frame12">
+        <div class="frame-title">12位</div>
+    </div>
+    <div class="frame" id="frame13">
+        <div class="frame-title">13位</div>
+    </div>
+    <div class="frame" id="frame14">
+        <div class="frame-title">14位</div>
+    </div>
+    <div class="frame" id="frame15">
+        <div class="frame-title">15位</div>
+    </div>
+    <div class="frame" id="frame16">
+        <div class="frame-title">16位</div>
+    </div>
+    <div class="frame" id="frame17">
+        <div class="frame-title">17位</div>
+    </div>
+    <div class="frame" id="frame18">
+        <div class="frame-title">18位</div>
+    </div>
+    <div class="frame" id="frame19">
+        <div class="frame-title">19位</div>
+    </div>
+</div>
+
+<!-- シード生成結果表示箇所、コピーボタンを追加 -->
+<div class="control-container">
+    <!-- シード生成ボタン、シード適用ボタンを修正 -->
+    <div class="button-container">
+        <input type="file" id="fileInput" accept=".txt">
+        <button onclick="generateSeed()">シードを生成</button>
+        <button onclick="applySeed()">読み込んだシードを適用</button>
+        <!-- 枠のリセットボタンは変更なし -->
+        <button onclick="resetFrames()">表をリセット</button>
+    </div>
+</div>
+
+<script>
+    // 以下は変更なしのコード
+
+    // 画像のファイル名を配列で定義
+    const images = [
+        //
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9XM1lWMnRYdi5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9ISkEyZFc3RC5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9JTVMzS21xdC5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9ZOUU4cUVyci5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9ybzVucTBhay5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9FdFJRazYxMy5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9FTk1iY3daMC5qcGciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9Kbk12RDk1OC5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9ZQmtBcWNneC5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC8xaDlLTWpOZi5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9YMmQwbTB4US5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC82ZDFvZUFPUi5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9MUmNwZnhLcS5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC90aDZlWmwzVC5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9iNGQyc25TNy5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9TTFR5VWpqcy5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9mcUZ3RVBmZi5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC85N251ZEt0My5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9IS1dzMlBXSC5qcGciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9DeWFJbHQxeC5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC85VjFjU0FJYi5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9sbmtMVnV3VS5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9xY0RxU1ZJai5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9YbXZhcmNUMi5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9zaXo2WWpCdC5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC91b0F5ajM0Ri5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIn19",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC84UkdjTHRrYi5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9mMlBhQURQMC5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9RRWlqQUxxNi5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC80WkFOZEYyRC5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIn19",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9Hd2pSR29rYy5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9CemVWMVVvOC5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9vUkR2R3JqYS5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9nREpaOE9YMS5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9tTmZ4dWJrSy5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC8wSFE4RDVOeC5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9pam1XYnhNdS5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9uaTZENWRMZS5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9BZURzUXBKVy5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9FTklwYTFhMS5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9LOVE3NlRxRS5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9rc2hqUUpoaC5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9VSXVqeUpJYi5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC81dnBtM3RRNi5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC91VURXYTVCYi5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9QYkNSTlMzdS5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9JWnZ2MmZESy5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9ud1BrUnlVVC5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9hSmZOY2dTRy5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIn19",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9GUVJZZFROei5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC92eGhLRjhoNC5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9kUFFNU0tsTS5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9rdmljaVM1cC5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9sR1lrUFY5Ty5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIn19",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9BUm9ZT2d0RS5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC96ZzB0NTJFQy5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9VVFpQZjdpaC5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIn19",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9IWkFxZ3BPRi5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIiwicmVzaXplIjp7IndpZHRoIjoxMDAsImZpdCI6ImNvdmVyIn19fQ==",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9lT1Vmb1N3Wi5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIn19",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC8wcUdzTjNnZi5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIn19",
+        "https://cdn.gamerch.com/resize/eyJidWNrZXQiOiJnYW1lcmNoLWltZy1jb250ZW50cyIsImtleSI6Indpa2lcLzExMjRcL2VudHJ5XC9kMU11clV6cC5wbmciLCJlZGl0cyI6eyJ3ZWJwIjp7InF1YWxpdHkiOjg1fSwidG9Gb3JtYXQiOiJ3ZWJwIn19"
+    ];
+
+    // 初期化関数
+    function initialize() {
+        try {
+            const startFrame = document.getElementById('startFrame');
+            images.forEach((image, index) => {
+                const img = createImg(image);
+                startFrame.appendChild(img);
+            });
+        } catch (error) {
+            console.error('An error occurred during initialization:', error);
+        }
+    }
+
+// 画像要素を生成する関数
+function createImg(src) {
+    const img = document.createElement('img');
+    img.src = src;
+    img.draggable = true;
+    assignImageId(img); // 画像要素に一意のIDを割り当てる
+    img.addEventListener('dragstart', dragStart);
+    // タッチイベントを追加
+    img.addEventListener('touchstart', touchStart);
+    img.addEventListener('touchmove', touchMove);
+    img.addEventListener('touchend', touchEnd);
+    return img;
+}
+
+// 画像要素に一意のIDを割り当てる関数
+function assignImageId(img) {
+    // カウンターを使用して一意のIDを生成
+    const id = 'img_' + imageCounter++;
+    img.id = id;
+}
+
+// 画像要素のカウンター
+let imageCounter = 1;
+
+// ドラッグ開始時の処理
+function dragStart(event) {
+    event.dataTransfer.setData('text/plain', event.target.id);
+}
+
+// ドラッグオーバー時の処理
+function dragOver(event) {
+    event.preventDefault();
+}
+
+// ドロップ時の処理
+function drop(event) {
+    event.preventDefault();
+    const data = event.dataTransfer.getData('text/plain');
+    const targetFrame = event.target.closest('.frame');
+    try {
+        if (!targetFrame) {
+            throw new Error('Drop target is not a frame.');
+        }
+        const img = document.getElementById(data);
+        if (!img || img.tagName !== 'IMG') {
+            throw new Error('Invalid dragged element.');
+        }
+        const sourceFrame = img.parentNode;
+        if (sourceFrame !== targetFrame) {
+            targetFrame.appendChild(img); // 元の画像を移動先の枠に追加
+        }
+        sortImages(targetFrame);
+    } catch (error) {
+        console.error('An error occurred during drop:', error);
+    }
+}
+
+// タッチ開始時の処理
+function touchStart(event) {
+    event.preventDefault();
+    const touch = event.touches[0];
+    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (!target || target.tagName !== 'IMG') return;
+    event.dataTransfer.setData('text/plain', target.id);
+}
+
+// タッチ移動時の処理
+function touchMove(event) {
+    event.preventDefault();
+}
+
+// タッチ終了時の処理
+function touchEnd(event) {
+    event.preventDefault();
+    const touch = event.changedTouches[0];
+    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (!target || !target.closest('.frame')) return;
+    const data = event.dataTransfer.getData('text/plain');
+    const targetFrame = target.closest('.frame');
+    try {
+        if (!targetFrame) {
+            throw new Error('Drop target is not a frame.');
+        }
+        const img = document.getElementById(data);
+        if (!img || img.tagName !== 'IMG') {
+            throw new Error('Invalid dragged element.');
+        }
+        const sourceFrame = img.parentNode;
+        if (sourceFrame !== targetFrame) {
+            targetFrame.appendChild(img); // 元の画像を移動先の枠に追加
+        }
+        sortImages(targetFrame);
+    } catch (error) {
+        console.error('An error occurred during drop:', error);
+    }
+}
+
+// 画像を枠内で並び替える関数
+function sortImages(frame) {
+    try {
+        const images = frame.querySelectorAll('img');
+        images.forEach((img, index) => {
+            frame.appendChild(img);
+        });
+    } catch (error) {
+        console.error('An error occurred during sorting images:', error);
+    }
+}
+
+// リセット関数
+function resetFrames() {
+    const frames = document.querySelectorAll('.frame');
+    try {
+        frames.forEach(frame => {
+            // 画像のみを削除する
+            frame.querySelectorAll('img').forEach(img => {
+                img.parentNode.removeChild(img);
+            });
+        });
+        initialize();
+    } catch (error) {
+        console.error('An error occurred during reset:', error);
+    }
+}
+
+// シードを生成する関数
+function generateSeed() {
+    const frames = document.querySelectorAll('.frame');
+    let seed = '';
+    frames.forEach((frame, index) => {
+        const imageSrcs = Array.from(frame.querySelectorAll('img')).map(img => img.src);
+        // HTMLファイルのURLを除外してシードを生成
+        const filteredImageSrcs = imageSrcs.filter(src => !src.includes('rankmaker3.html'));
+        const frameSeed = filteredImageSrcs.join(',');
+        if (index !== 0) { // 最初のフレーム以外にはセミコロンを追加
+            seed += ';';
+        }
+        seed += frameSeed; // エンコードなしでシードに追加
+    });
+    // シードをテキストファイルとしてダウンロード
+    downloadSeed(seed);
+}
+
+// シードをテキストファイルとしてダウンロードする関数
+function downloadSeed(seed) {
+    const blob = new Blob([seed], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "rank" + "-" + Date.now() + "-" +(Math.round(Math.random() * 100000000000)) + ".txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+// シードを適用する関数
+function applySeed() {
+    try {
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
+        if (!file) {
+            alert('ファイルをインポートしてください！');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const seed = event.target.result;
+            decodeAndApplySeed(seed); // シードを適用
+        };
+        reader.readAsText(file);
+    } catch (error) {
+        console.error('An error occurred during seed application:', error);
+    }
+}
+
+// シードをデコードして適用する関数
+function decodeAndApplySeed(seed) {
+    const decodedSeed = seed.trim();
+    console.log('Decoded seed:', decodedSeed); // デコード結果をコンソールに出力
+    const seedParts = decodedSeed.split(';');
+    const frames = document.querySelectorAll('.frame');
+    if (seedParts.length !== frames.length) { // 枠の数とシードの要素数を比較
+        alert('適切なシードファイルではありません！');
+        return;
+    }
+    seedParts.forEach((frameSeed, index) => {
+        const imageSrcs = frameSeed.split(',');
+        const frame = frames[index];
+        // 画像のみを削除する
+        frame.querySelectorAll('img').forEach(img => {
+            img.parentNode.removeChild(img);
+        });
+        imageSrcs.forEach(src => {
+            const img = createImg(src);
+            frame.appendChild(img);
+        });
+        sortImages(frame);
+    });
+}
+
+    // シードをクリップボードにコピーする関数
+    function copySeed() {
+        try {
+            const seedOutput = document.getElementById('seedOutput');
+            seedOutput.select();
+            seedOutput.setSelectionRange(0, 99999); /* For mobile devices */
+            document.execCommand('copy');
+            alert('Seed copied to clipboard!');
+        } catch (error) {
+            console.error('An error occurred during seed copying:', error);
+        }
+    }
+
+    // シード入力欄をクリアする関数
+    function clearSeedInput() {
+        try {
+            const seedInput = document.getElementById('seedInput');
+            seedInput.value = '';
+        } catch (error) {
+            console.error('An error occurred while clearing seed input:', error);
+        }
+    }
+
+    // イベントリスナーの設定
+    initialize();
+    const frames = document.querySelectorAll('.frame');
+    frames.forEach(frame => {
+        frame.addEventListener('dragover', dragOver);
+        frame.addEventListener('drop', drop);
+    });
+</script>
+
+</body>
+</html>
