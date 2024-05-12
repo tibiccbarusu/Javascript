@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>シミュレーター</title>
+<style>
+    textarea {
+        width:900px;
+        height:500px;
+    }
+</style>
+</head>
+<body>
+    <h3>
+        関数の記述方法
+    </h3>
+    <div>
+        数値:実数の範囲内(小数も可能)
+        <br>
+        計算演算子:+、-、*、/、%、( )が使用可能、^や+=等や++等は使用不可
+        <br>
+        論理演算子:!、? : 、&gt;、&gt;=、==、&lt;=、&lt;、!=、&&、||が使用可能、その他演算子は不明
+        <br>
+        詳しくはこちら<a href="https://tagnote.net/javascript/language-operators-javascript/">URL</a>
+        <br>
+        変数:{変数名}で記述
+        <br>
+        変数の定義:{変数名} = 式;
+        <br>
+        <h5>
+            注意点
+        </h5>
+        式の最後には必ず;を加えること。
+        <br>
+        式は複数行書くことができます。
+        <br>
+        右辺にも変数(同名変数も可)を使用できます。
+        <br>
+        変数名は英数字と$が使用可能で、最初の1文字目だけは数字と$は使用不可です。
+        <br>
+        変数は可変型のグローバル変数であるため、再定義が可能で別関数内でも呼び出しや変更ができます。
+        <br>
+        例:
+        <br>
+        <code>
+            {a} = 1;
+            <br>
+            {b} = 1;
+            <br>
+            {a} = {a} + 1;
+            <br>
+            {b} = {a} + 1;
+        </code>
+        <br>
+        これらの式を含む関数を実行すると、aは2、bは3が代入されます。
+    </div>
+    <br>
+    <h3>
+        既存変数
+    </h3>
+    <div>
+        <table border>
+            <tbody>
+                <tr>
+                    <th>
+                        変数名
+                    </th>
+                    <th>
+                        初期値
+                    </th>
+                    <th>
+                        仕様
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        rand
+                    </td>
+                    <td>
+                        無し
+                    </td>
+                    <td>
+                        0~1000000までの乱数を返します。
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        func0
+                    </td>
+                    <td>
+                        0
+                    </td>
+                    <td>
+                        func0の値が0ではない時、実行中の関数終了後にシステム関数を実行します。
+                        <br>
+                        1つの関数内で2つ以上のfunc変数を0ではない値にした場合、数字の小さい関数から実行されます。
+                        <br>
+                        該当関数実行後、値は0に戻ります。
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        func1~func10
+                    </td>
+                    <td>
+                        0
+                    </td>
+                    <td>
+                        該当変数の値が0ではない時、実行中の関数終了後にキャラ1~10関数を実行します。
+                        <br>
+                        1つの関数内で2つ以上のfunc変数を0ではない値にした場合、数字の小さい関数から実行されます。
+                        <br>
+                        該当関数実行後、値は0に戻ります。
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        end
+                    </td>
+                    <td>
+                        0
+                    </td>
+                    <td>
+                        endの値が0ではない時、シミュレーターを停止します。
+                        <br>
+                        endの値が0になった時点でシミュレーターは停止するため、そのあとに記述された式は全て無視されます。
+                        <br>
+                        シミュレーター停止後、値は0に戻ります。
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        例:
+        <br>
+        <code>
+            {func0} = 1;
+        </code>
+        <br>
+        この式を含む関数を実行すると、システム関数が実行されます。
+    </div>
+    <br>
+    <h3>
+        シミュレーターに関して
+    </h3>
+    <div>
+        変数を定義してシミュレーションを開始ボタンを押すと、変数を定義(初期値を含む)する関数のみが実行されます。
+        <br>
+        placeholderが入っているため初期で関数内に式が入っているように見えますが、実際は何も入っていません。(何か入力すれば消えます。)
+        <br>
+        別関数に移動する場合は、func変数の値を変更してください。
+        <br>
+        条件分岐は論理演算子を使用してください。
+        <br>
+        例:
+        <br>
+        <code>
+            {a} = 2;
+            <br>
+            {b} = 0;
+            <br>
+            {b} = {a} > 0 && {a} % 2 == 0 ? 1 : 0;
+        </code>
+        <br>
+        これらの式を含む関数を実行すると、aは2、bは1が代入されます。
+        <br>
+        シミュレーター実行後、endの値が0ではなくなるまたはループしすぎると停止します。
+        <br>
+        再開する場合は、続行用関数に任意の式を入力してこの関数を実行してシミュレーションを続行ボタンを押してください。
+        <br>
+        再開した場合は続行用関数のみが実行されます。。
+        <br>
+        シミュレーターの結果はすべてログに記録されます。
+        <h5>
+            注意点
+        </h5>
+        <span style="color: red;">このサイトには保存機能がないので、終わったらテキストファイル等に式や関数を保存するようにしてください。</span>
+    </div>
+    <br>
+    <h3>
+        シミュレーター
+    </h3>
+    <div>
+        変数を定義(初期値を含む)する関数
+    </div>
+    <textarea id="default" placeholder="{c1$HP} = 10000000;
+{c1$ATK} = 0;
+{c2$HP} = 10000000;
+{c2$ATK} = 0;
+{end2} = 0;
+{func0} = 1;"></textarea>
+    <br>
+    <div>
+        システム関数
+    </div>
+    <textarea id="expression0" placeholder="{c1$ATK} = {rand};
+{c2$ATK} = {rand};
+{c1$HP} = {c1$HP};
+{c2$HP} = {c2$HP};
+{end} = {end2} == 1 ? 1 : 0;
+{func1} = 1;"></textarea>
+    <br>
+    <div>
+        キャラ1関数
+    </div>
+    <textarea id="expression1" placeholder="{c1$HP} = {end2} == 0 ? {c1$HP} - {c2$ATK} : {c1$HP};
+{end2} = {c1$HP} <= 0 || {c2$HP} <= 0 ? 1 : 0;
+{func2} = 1;"></textarea>
+    <br>
+    <div>
+        キャラ2関数
+    </div>
+    <textarea id="expression2" placeholder="{c2$HP} = {end2} == 0 ? {c2$HP} - {c1$ATK} : {c2$HP};
+{end2} = {c1$HP} <= 0 || {c2$HP} <= 0 ? 1 : 0;
+{func0} = 1;"></textarea>
+    <br>
+    <div>
+        キャラ3関数
+    </div>
+    <textarea id="expression3"></textarea>
+    <br>
+    <div>
+        キャラ4関数
+    </div>
+    <textarea id="expression4"></textarea>
+    <br>
+    <div>
+        キャラ5関数
+    </div>
+    <textarea id="expression5"></textarea>
+    <br>
+    <div>
+        キャラ6関数
+    </div>
+    <textarea id="expression6"></textarea>
+    <br>
+    <div>
+        キャラ7関数
+    </div>
+    <textarea id="expression7"></textarea>
+    <br>
+    <div>
+        キャラ8関数
+    </div>
+    <textarea id="expression8"></textarea>
+    <br>
+    <div>
+        キャラ9関数
+    </div>
+    <textarea id="expression9"></textarea>
+    <br>
+    <div>
+        キャラ10関数
+    </div>
+    <textarea id="expression10"></textarea>
+    <br>
+    <input type="button" value="変数を定義してシミュレーションを開始" id="calculate">
+    <br>
+    <div>
+        続行用関数
+    </div>
+    <textarea id="continue"></textarea>
+    <br>
+    <input type="button" value="続行用関数を実行してシミュレーションを続行" id="continuecal">
+    <br>
+    <div>
+        ログ
+    </div>
+    <textarea id="result" readonly></textarea>
+
+    <script>
+        "use strict"
+
+        //汎用トリガー関数,trigger(ID{input/buttonのid},トリガー,関数名)
+        function trigger(id,trigger,func) {
+            document.getElementById(id).addEventListener(trigger,function(){func();},false);
+        }
+
+        //汎用乱数関数,rand(最小値{実数},最大値{実数})
+        function rand(min,max) {
+            if (min == null || max == null) {
+                console.log("error:min or max is null.");
+            } else {
+                const minTypeof = typeof min;
+                const maxTypeof = typeof max;
+                if (minTypeof != "number" || maxTypeof != "number") {
+                    console.log("error:min or max is not number.");
+                    return 0;
+                } else if (min > max) {
+                    console.log("error:min > max");
+                    return 0;
+                } else {
+                    const random = Math.random();
+                    const rand = Math.round(((random * (max - min + 1)) + min) >= max + 0.5 ? min : (random * (max - min + 1)) + min);
+                    return rand;
+                }
+            }
+        }
+
+        //汎用値取得関数,getValueById(ID{input/textareaのid})
+        function getValueById(id) {
+            const text = document.getElementById(id).value;
+            const result = text == null ? "" : text;
+            return result;
+        }
+
+        //汎用要素変更関数,replaceInnerHTML(ID{div,p,span,textarea等のid},text)
+        function replaceInnerHTML(id,text) {
+            if (text == null) {
+                console.log("error:text is null.");
+            } else {
+                const element = document.getElementById(id);
+                element.innerHTML = text;
+            }
+        }
+
+        let variables = {
+            rand: 0,
+            func0: 0,
+            func1: 0,
+            func2: 0,
+            func3: 0,
+            func4: 0,
+            func5: 0,
+            func6: 0,
+            func7: 0,
+            func8: 0,
+            func9: 0,
+            func10: 0,
+            end: 0
+        };
+
+        let log = "";
+
+        function calculate(expressionInput) {
+            try {
+                let expressions = expressionInput.split(";"); // 式をセミコロンで分割
+                expressions = expressions.filter(expression => expression.trim() !== ''); // 空でない要素だけを抽出
+                expressions.forEach((expression, index) => evaluateAndAssign(expression.trim(), index + 1)); // 各式を評価
+            } catch (error) {
+                log += "Error: " + error.message + "\n";
+            }
+        }
+
+        // 式を評価し、変数に結果を代入する関数
+        function evaluateAndAssign(expression, lineNumber) {
+            if(variables.end == 0) {
+                // 変数名と計算式を抽出
+                const matches = expression.match(/\{(.*?)\}\s*=\s*(.*?)(?=\s*;|$)/);
+                if (matches) {
+                    const variableName = matches[1];
+                    const formula = matches[2];
+                    const result = evaluateExpression(formula, lineNumber); // 式を評価
+                    setVariable(variables, variableName, result); // 変数に結果を代入
+                } else {
+                    throw new Error("Invalid expression format at line " + lineNumber + ": " + expression);
+                }
+            }
+        }
+
+        // 変数に結果を代入する関数
+        function setVariable(obj, path, value) {
+            const keys = path.split('$');
+            let currentObj = obj;
+            for (let i = 0; i < keys.length - 1; i++) {
+                const key = keys[i];
+                if (!(key in currentObj)) {
+                    currentObj[key] = {};
+                }
+                currentObj = currentObj[key];
+            }
+            currentObj[keys[keys.length - 1]] = value;
+            log += path + ":" + value + "\n";
+        }
+
+        // 式を評価する関数（以前のevaluateExpression関数と同じ）
+        function evaluateExpression(expression, lineNumber) {
+            variables.rand = rand(0,1000000);
+            // ドル記号を置換する
+            expression = expression.replace(/\{(.*?)\}/g, (match, key) => {
+                const variable = getVariable(variables, key.replace(/\{(.*?)\}/g, (_, innerKey) => innerKey.replace(/\$/g, '.')));
+                if (variable !== undefined) {
+                    return variable;
+                } else {
+                    throw new Error("Variable '" + key + "' not found at line " + lineNumber);
+                }
+            });
+
+            if (!/^[\d+\-*/()^?<!>=&|:%\s.]+$/.test(expression)) {
+                throw new Error("Invalid characters in expression at line " + lineNumber + ": " + expression);
+            }
+            if (!parenthesesAreBalanced(expression)) {
+                throw new Error("Unbalanced parentheses in expression at line " + lineNumber + ": " + expression);
+            }
+            const result = Math.round(Function('variables', 'return ' + expression)(variables) * 10000000) / 10000000; // 式を評価
+            return result;
+        }
+
+        // 指定されたパスの変数の値を取得する関数
+        function getVariable(obj, path) {
+            const keys = path.split('$');
+            let currentObj = obj;
+            for (let key of keys) {
+                if (!(key in currentObj)) {
+                    return undefined;
+                }
+                currentObj = currentObj[key];
+            }
+            return currentObj;
+        }
+
+        // 括弧がバランスしているかどうかをチェックする関数（以前のparenthesesAreBalanced関数と同じ）
+        function parenthesesAreBalanced(expression) {
+            let count = 0;
+            for (let char of expression) {
+                if (char === '(') {
+                    count++;
+                } else if (char === ')') {
+                    count--;
+                }
+                if (count < 0) {
+                    return false;
+                }
+            }
+            return count === 0;
+        }
+
+        function cal() {
+            let expressionInput = getValueById("default");
+            let count = 0;
+            let loopcount = 0;
+            log = "";
+            variables.end = 0;
+            calculate(expressionInput);
+            for(let i = 0; variables.end == 0 && loopcount <= 1000;) {
+                count = 0;
+                if(variables.func0 != 0 && variables.end == 0) {
+                    variables.func0 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression0");
+                    calculate(expressionInput);
+                }
+                if(variables.func1 != 0 && variables.end == 0) {
+                    variables.func1 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression1");
+                    calculate(expressionInput);
+                }
+                if(variables.func2 != 0 && variables.end == 0) {
+                    variables.func2 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression2");
+                    calculate(expressionInput);
+                }
+                if(variables.func3 != 0 && variables.end == 0) {
+                    variables.func3 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression3");
+                    calculate(expressionInput);
+                }
+                if(variables.func4 != 0 && variables.end == 0) {
+                    variables.func4 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression4");
+                    calculate(expressionInput);
+                }
+                if(variables.func5 != 0 && variables.end == 0) {
+                    variables.func5 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression5");
+                    calculate(expressionInput);
+                }
+                if(variables.func6 != 0 && variables.end == 0) {
+                    variables.func6 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression6");
+                    calculate(expressionInput);
+                }
+                if(variables.func7 != 0 && variables.end == 0) {
+                    variables.func7 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression7");
+                    calculate(expressionInput);
+                }
+                if(variables.func8 != 0 && variables.end == 0) {
+                    variables.func8 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression8");
+                    calculate(expressionInput);
+                }
+                if(variables.func9 != 0 && variables.end == 0) {
+                    variables.func9 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression9");
+                    calculate(expressionInput);
+                }
+                if(variables.func10 != 0 && variables.end == 0) {
+                    variables.func10 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression10");
+                    calculate(expressionInput);
+                }
+                loopcount++;
+                replaceInnerHTML("result",log);
+                if(count == 0) {
+                    log += "このループでは何も実行されません。\n";
+                    replaceInnerHTML("result",log);
+                    break;
+                }
+            }
+            log += "ループ上限に達したため、強制的にループを停止します。\n";
+            replaceInnerHTML("result",log);
+        }
+
+        function continuecal() {
+            let expressionInput = getValueById("continue");
+            let count = 0;
+            let loopcount = 0;
+            variables.end = 0;
+            calculate(expressionInput);
+            for(let i = 0; variables.end == 0 && loopcount <= 1000;) {
+                count = 0;
+                if(variables.func0 != 0 && variables.end == 0) {
+                    variables.func0 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression0");
+                    calculate(expressionInput);
+                }
+                if(variables.func1 != 0 && variables.end == 0) {
+                    variables.func1 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression1");
+                    calculate(expressionInput);
+                }
+                if(variables.func2 != 0 && variables.end == 0) {
+                    variables.func2 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression2");
+                    calculate(expressionInput);
+                }
+                if(variables.func3 != 0 && variables.end == 0) {
+                    variables.func3 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression3");
+                    calculate(expressionInput);
+                }
+                if(variables.func4 != 0 && variables.end == 0) {
+                    variables.func4 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression4");
+                    calculate(expressionInput);
+                }
+                if(variables.func5 != 0 && variables.end == 0) {
+                    variables.func5 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression5");
+                    calculate(expressionInput);
+                }
+                if(variables.func6 != 0 && variables.end == 0) {
+                    variables.func6 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression6");
+                    calculate(expressionInput);
+                }
+                if(variables.func7 != 0 && variables.end == 0) {
+                    variables.func7 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression7");
+                    calculate(expressionInput);
+                }
+                if(variables.func8 != 0 && variables.end == 0) {
+                    variables.func8 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression8");
+                    calculate(expressionInput);
+                }
+                if(variables.func9 != 0 && variables.end == 0) {
+                    variables.func9 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression9");
+                    calculate(expressionInput);
+                }
+                if(variables.func10 != 0 && variables.end == 0) {
+                    variables.func10 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression10");
+                    calculate(expressionInput);
+                }
+                loopcount++;
+                replaceInnerHTML("result",log);
+                if(count == 0) {
+                    log += "このループでは何も実行されません。\n";
+                    replaceInnerHTML("result",log);
+                    break;
+                }
+            }
+            log += "ループ上限に達したため、強制的にループを停止します。\n";
+            replaceInnerHTML("result",log);
+        }
+
+        trigger("calculate","click",cal);
+        trigger("continuecal","click",continuecal);
+    </script>
+</body>
+</html>
