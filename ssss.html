@@ -1,0 +1,2189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>シミュレーター</title>
+    <style>
+        #screen, #enemyscreen {
+            width: 1200px;
+            height: 300px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            border: 1px solid black;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .character {
+            position: relative;
+            top: 75px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .character-img {
+            width: 100px;
+            height: auto;
+        }
+        .bar-container {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .label {
+            width: 30px;
+            text-align: right;
+            margin-right: 5px;
+        }
+        .character-HP, .character-MP {
+            display: flex;
+            width: 100px;
+            height: 20px;
+            background-color: white;
+            position: relative;
+            border: 1px solid black;
+        }
+        .HP-bar, .MP-bar {
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .value {
+            margin-left: 5px;
+            width: 80px;
+            text-align: left;
+        }
+        .icon-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .icon-row {
+            display: flex;
+        }
+        .icon {
+            width: 20px;
+            height: 20px;
+            margin: 2px;
+        }
+        .skill-count {
+            position: relative;
+            top: -250px;
+            background-color: white;
+            padding: 5px;
+            border: 1px solid black;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        .special-available {
+            position: relative;
+            top: -250px;
+            background-color: white;
+            padding: 5px;
+            border: 1px solid black;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        textarea {
+            width: 500px;
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h3>関数の記述方法</h3>
+    <div>
+        数値:実数の範囲内(小数も可能)
+        <br>
+        計算演算子:+、-、*、/、%、( )が使用可能、^や+=等や++等は使用不可
+        <br>
+        論理演算子:!、? : 、&gt;、&gt;=、==、&lt;=、&lt;、!=、&&、||が使用可能、その他演算子は不明
+        <br>
+        詳しくはこちら<a href="https://tagnote.net/javascript/language-operators-javascript/">URL</a>
+        <br>
+        変数:{変数名}で記述
+        <br>
+        変数の定義:{変数名} = 式;
+        <br>
+        <h5>注意点</h5>
+        式の最後には必ず;を加えること。
+        <br>
+        式は複数行書くことができます。
+        <br>
+        右辺にも変数(同名変数も可)を使用できます。
+        <br>
+        変数名は英数字と$が使用可能で、最初の1文字目だけは数字と$は使用不可です。$記号は1変数内に1つしか使用出来ません。変数末尾に$を使用することはできません。
+        <br>
+        変数は可変型のグローバル変数であるため、再定義が可能で別関数内でも呼び出しや変更ができます。
+        <br>
+        例:
+        <br>
+        <code>
+            {a} = 1;
+            <br>
+            {b} = 1;
+            <br>
+            {a} = {a} + 1;
+            <br>
+            {b} = {a} + 1;
+        </code>
+        <br>
+        これらの式を含む関数を実行すると、aは2、bは3が設定されます。
+    </div>
+    <br>
+    <h3>既存変数</h3>
+    <div>
+        これらの変数の値も変更可能です。
+        <table border>
+            <tbody>
+                <tr>
+                    <th>変数名</th>
+                    <th>初期値</th>
+                    <th>仕様</th>
+                </tr>
+                <tr>
+                    <td>rand</td>
+                    <td>無し</td>
+                    <td>0~1000000までの乱数を返します。</td>
+                </tr>
+                <tr>
+                    <td>c1$maxHP ~ c10$maxHP</td>
+                    <td>1</td>
+                    <td>
+                        キャラクター1~10の最大HPを表します。
+                        <br>
+                        1以上の整数のみ使用可能。
+                        <br>
+                        値がスクリーンに表示されます。
+                    </td>
+                </tr>
+                <tr>
+                    <td>c1$currentHP ~ c10$currentHP</td>
+                    <td>0</td>
+                    <td>
+                        キャラクター1~10の現在のHPを表します。
+                        <br>
+                        1以上の整数のみ使用可能。
+                        <br>
+                        値がスクリーンに表示されます。
+                    </td>
+                </tr>
+                <tr>
+                    <td>c1$maxMP ~ c10$maxMP</td>
+                    <td>1</td>
+                    <td>
+                        キャラクター1~10の最大MPを表します。
+                        <br>
+                        1以上の整数のみ使用可能。
+                        <br>
+                        値がスクリーンに表示されます。
+                    </td>
+                </tr>
+                <tr>
+                    <td>c1$currentMP ~ c10$currentMP</td>
+                    <td>0</td>
+                    <td>
+                        キャラクター1~10の現在のMPを表します。
+                        <br>
+                        1以上の整数のみ使用可能。
+                        <br>
+                        値がスクリーンに表示されます。
+                    </td>
+                </tr>
+                <tr>
+                    <td>c1$skillCount ~ c10$skillCount</td>
+                    <td>0</td>
+                    <td>
+                        キャラクター1~10のたいきスキルの残り発動回数を表します。
+                        <br>
+                        1以上の整数のみ使用可能。
+                        <br>
+                        値がスクリーンに表示されます。
+                    </td>
+                </tr>
+                <tr>
+                    <td>c1$specialAvailable ~ c10$specialAvailable</td>
+                    <td>0</td>
+                    <td>
+                        キャラクター1~10のけものミラクルが発動可能かを表します。
+                        <br>
+                        1以上の整数のみ使用可能。
+                        <br>
+                        0の時は発動不可、0ではない時は発動可能。
+                        <br>
+                        発動可能かがスクリーンに表示されます。
+                    </td>
+                </tr>
+                <tr>
+                    <td>func0 ~ func50</td>
+                    <td>0</td>
+                    <td>
+                        該当変数の値が0ではない時、実行中の関数終了後に関数0~50を実行します。
+                        <br>
+                        1つの関数内で2つ以上のfunc変数を0ではない値にした場合、数字の小さい関数から実行されます。
+                        <br>
+                        該当関数実行後、値は0に戻ります。
+                    </td>
+                </tr>
+                <tr>
+                    <td>end</td>
+                    <td>0</td>
+                    <td>
+                        endの値が0ではない時、シミュレーターを停止します。
+                        <br>
+                        endの値が0になった時点でシミュレーターは停止するため、そのあとに記述された式は全て無視されます。...多分。
+                        <br>
+                        シミュレーター停止後、値は0に戻ります。
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        例:
+        <br>
+        <code>
+            {func0} = 1;
+        </code>
+        <br>
+        この式を含む関数を実行すると、その関数終了後に関数0が実行されます。
+        <br>
+        例:
+        <br>
+        <code>
+            {c2$maxHP} = 100;
+        </code>
+        <br>
+        この式を含む関数を実行すると、キャラクター2の最大HPが100に設定されます。
+    </div>
+    <br>
+    <h3>特殊式</h3>
+    <div>
+        <table border>
+            <tbody>
+                <tr>
+                    <th>式</th>
+                    <th>返り値</th>
+                    <th>仕様</th>
+                </tr>
+                <tr>
+                    <td>waitForInput()</td>
+                    <td>入力された値</td>
+                    <td>この式を使用すると、入力が求められます。入力が求められたかどうかはログを確認してください。
+                        <br>
+                        入力できる値は実数のみです。できれば0以上の整数にしてください。
+                    </td>
+                </tr>
+                <tr>
+                    <td>function アディショナル関数名 [式]</td>
+                    <td>-</td>
+                    <td>簡単なアディショナル関数を定義できます。
+                        <br>
+                        []内の式は2行以上も可能です。
+                        <br>
+                        []内にアディショナル関数呼び出しとwaitForInput()以外の特殊式(アディショナル関数定義を含む)は使用できません。
+                        <br>
+                        アディショナル関数名;でそのアディショナル関数を呼び出せます。
+                        <br>
+                        定義後の]の後には;をつけてください。
+                        <br>
+                        <span style="color: red;">無限ループしないように注意してください。</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>if [条件式,条件式がtureの場合に実行する式,条件式がfalseの場合に実行する式]</td>
+                    <td>-</td>
+                    <td>簡単なif文を設定できます。
+                        <br>
+                        []内の式は2行以上不可です。
+                        <br>
+                        []内にアディショナル関数呼び出しとwaitForInput()以外の特殊式(アディショナル関数定義を含む)は使用できません。
+                        <br>
+                        []内の式には;をつけないでください。
+                        <br>
+                        設定後の]の後には;をつけてください。
+                    </td>
+                </tr>
+                <tr>
+                    <td>while [ループ条件式,ループ条件式がtureの場合に実行する式]</td>
+                    <td>-</td>
+                    <td>簡単なwhile文を設定できます。
+                        <br>
+                        []内の式は2行以上不可です。
+                        <br>
+                        []内にアディショナル関数呼び出しとwaitForInput()以外の特殊式(アディショナル関数定義を含む)は使用できません。
+                        <br>
+                        []内の式には;をつけないでください。
+                        <br>
+                        設定後の]の後には;をつけてください。
+                        <br>
+                        <span style="color: red;">無限ループしないように注意してください。</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>showtext [テキスト]</td>
+                    <td>-</td>
+                    <td>ログとは別の出力するテキストを設定できます。
+                        <br>
+                        []内には任意のテキストを入力できます。記号はできるだけ使用しないでください。
+                        <br>
+                        []内に{}で囲まれた変数が存在する場合(複数も可)、その変数の値に置換されます。
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        例:
+        <br>
+        <code>
+            showtext [
+            <br>
+            好きな自然数を入力してください
+            <br>
+            ];
+            <br>
+            {a} = waitForInput();
+            <br>
+            showtext [
+            <br>
+            入力された値は{a}です
+            <br>
+            ];
+        </code>
+        <br>
+        この式を含む関数を実行すると、好きな自然数を入力してくださいと表示され、値を入力すると、入力された値は{a}ですが表示されます。({a}には入力された値が置換される)。
+        <br>
+        例:
+        <br>
+        <code>
+            function testfunc1 [
+            <br>
+            {a} = {a} + 1;
+            <br>
+        ];
+        <br>
+        function testfunc2 [
+        <br>
+            {a} = {a} + 1;
+            <br>
+            testfunc1;
+            <br>
+        ];
+        <br>
+        {a} = 1;
+        <br>
+        testfunc2;
+        </code>
+        <br>
+        この式を含む関数を実行すると、最終的にaに3に設定されます。
+        <br>
+        例:
+        <br>
+        <code>
+            {a} = 0;
+            <br>
+        function testfunc [
+        <br>
+        {a} = {a} + 1;
+        <br>
+        ];
+        <br>
+        if [
+        <br>
+        {a} == 0,
+        <br>
+        testfunc,
+        <br>
+        {a} = 0
+        <br>
+        ];
+        </code>
+        <br>
+        この式を含む関数を実行すると、ifの前にaが0であればaに1が、ifの前にaが0ではなければaが0に設定されます。
+        <br>
+        例:
+        <br>
+        <code>
+            {a} = 0;
+            <br>
+            {i} = 0;
+            <br>
+            function testfunc [
+            <br>
+            {a} = {a} + 1;
+            <br>
+            {i} = {i} + 1;
+            <br>
+            ];
+            <br>
+            while [
+            <br>
+            {i} < 10,
+            <br>
+            testfunc
+            <br>
+            ];
+        </code>
+        <br>
+        この式を含む関数を実行すると、最終的にaが10に設定されます。
+    </div>
+    <br>
+    <h3>シミュレーターに関して</h3>
+    <div>
+        シミュレーションを開始ボタンを押すと、デフォルト関数のみが実行されます。
+        <br>
+        別関数に移動する場合は、func変数の値を変更してください。
+        <br>
+        条件分岐やループ等は特殊式でも作成できますが、できるだけ論理演算子やfunc変数を使用してください。
+        <br>
+        例:
+        <br>
+        <code>
+            {a} = 2;
+            <br>
+            {b} = 0;
+            <br>
+            {b} = {a} > 0 && {a} % 2 == 0 ? 1 : 0;
+        </code>
+        <br>
+        これらの式を含む関数を実行すると、aは2、bは1が代入されます。
+        <br>
+        シミュレーター実行後、endの値が0ではなくなるまたはループしすぎる(5000回以上)と停止します。
+        <br>
+        初めからやり直す場合は、ページをリロードするか再度シミュレーションを開始ボタンを押してください。
+        <br>
+        再開する場合は、続行用関数に任意の式を入力してこの関数を実行してシミュレーションを続行ボタンを押してください。
+        <br>
+        再開した場合は続行用関数のみが実行されます。
+        <br>
+        シミュレーターの結果はすべてログに記録されます。エラーもログに記録されます。
+        <br>
+        キャラ画像は各テキストエリアに画像のURLを入力し、ボタンを押してキャラ画像を適用してください。
+        <br>
+        テキストエリアは右下の角をドラッグすることでサイズを変更できます。
+        <br>
+        どこに何のキャラを設定するかは特に決まっていません。また、対セルリアン戦でもちからくらべ想定でも可能です。
+        <br>
+
+        <h5>注意点</h5>
+        <span style="color: red;">このサイトには部分的な保存機能はありません。</span>
+        <br>
+        <span style="color: red;">万が一に備えて定期的にデータを保存してください。</span>
+    </div>
+    <br>
+    <h3>シミュレーター</h3>
+    <div id="enemyscreen">
+        <!-- 敵キャラクターが動的に生成されます -->
+    </div>
+    <div id="screen">
+        <!-- 味方キャラクターが動的に生成されます -->
+    </div>
+    <br>
+    <input type="button" value="シミュレーションを開始" id="calculate">
+    <br>
+    <div>テキスト表示</div>
+    <textarea id="text" readonly></textarea>
+    <br>
+    <div>
+        <label for="userInput">入力を求められた場合、ここに入力:</label>
+        <input type="text" id="userInput">
+        <button id="submitInput">入力を送信</button>
+    </div>
+    <div>ログ</div>
+    <textarea id="result" readonly></textarea>
+    <br>
+    <label>データをインポート:<input type="file" id="importData"></label>
+    <br>
+    <label>データをエクスポート:<button id="exportData">エクスポート</button></label>
+    <br>
+    <label>キャラ画像を適用:<button id="setIcon">アイコン画像をセット</button></label>
+    <br>
+    <div>キャラ画像1 URL</div>
+    <textarea id="icon1"></textarea>
+    <br>
+    <div>キャラ画像2 URL</div>
+    <textarea id="icon2"></textarea>
+    <br>
+    <div>キャラ画像3 URL</div>
+    <textarea id="icon3"></textarea>
+    <br>
+    <div>キャラ画像4 URL</div>
+    <textarea id="icon4"></textarea>
+    <br>
+    <div>キャラ画像5 URL</div>
+    <textarea id="icon5"></textarea>
+    <br>
+    <div>キャラ画像6 URL</div>
+    <textarea id="icon6"></textarea>
+    <br>
+    <div>キャラ画像7 URL</div>
+    <textarea id="icon7"></textarea>
+    <br>
+    <div>キャラ画像8 URL</div>
+    <textarea id="icon8"></textarea>
+    <br>
+    <div>キャラ画像9 URL</div>
+    <textarea id="icon9"></textarea>
+    <br>
+    <div>キャラ画像10 URL</div>
+    <textarea id="icon10"></textarea>
+    <br>
+    <div>デフォルト関数</div>
+    <textarea id="default"></textarea>
+    <br>
+    <div>関数0</div>
+    <textarea id="expression0"></textarea>
+    <br>
+    <div>関数1</div>
+    <textarea id="expression1"></textarea>
+    <br>
+    <div>関数2</div>
+    <textarea id="expression2"></textarea>
+    <br>
+    <div>関数3</div>
+    <textarea id="expression3"></textarea>
+    <br>
+    <div>関数4</div>
+    <textarea id="expression4"></textarea>
+    <br>
+    <div>関数5</div>
+    <textarea id="expression5"></textarea>
+    <br>
+    <div>関数6</div>
+    <textarea id="expression6"></textarea>
+    <br>
+    <div>関数7</div>
+    <textarea id="expression7"></textarea>
+    <br>
+    <div>関数8</div>
+    <textarea id="expression8"></textarea>
+    <br>
+    <div>関数9</div>
+    <textarea id="expression9"></textarea>
+    <br>
+    <div>関数10</div>
+    <textarea id="expression10"></textarea>
+    <br>
+    <div>関数11</div>
+    <textarea id="expression11"></textarea>
+    <br>
+    <div>関数12</div>
+    <textarea id="expression12"></textarea>
+    <br>
+    <div>関数13</div>
+    <textarea id="expression13"></textarea>
+    <br>
+    <div>関数14</div>
+    <textarea id="expression14"></textarea>
+    <br>
+    <div>関数15</div>
+    <textarea id="expression15"></textarea>
+    <br>
+    <div>関数16</div>
+    <textarea id="expression16"></textarea>
+    <br>
+    <div>関数17</div>
+    <textarea id="expression17"></textarea>
+    <br>
+    <div>関数18</div>
+    <textarea id="expression18"></textarea>
+    <br>
+    <div>関数19</div>
+    <textarea id="expression19"></textarea>
+    <br>
+    <div>関数20</div>
+    <textarea id="expression20"></textarea>
+    <br>
+    <div>関数21</div>
+    <textarea id="expression21"></textarea>
+    <br>
+    <div>関数22</div>
+    <textarea id="expression22"></textarea>
+    <br>
+    <div>関数23</div>
+    <textarea id="expression23"></textarea>
+    <br>
+    <div>関数24</div>
+    <textarea id="expression24"></textarea>
+    <br>
+    <div>関数25</div>
+    <textarea id="expression25"></textarea>
+    <br>
+    <div>関数26</div>
+    <textarea id="expression26"></textarea>
+    <br>
+    <div>関数27</div>
+    <textarea id="expression27"></textarea>
+    <br>
+    <div>関数28</div>
+    <textarea id="expression28"></textarea>
+    <br>
+    <div>関数29</div>
+    <textarea id="expression29"></textarea>
+    <br>
+    <div>関数30</div>
+    <textarea id="expression30"></textarea>
+    <br>
+    <div>関数31</div>
+    <textarea id="expression31"></textarea>
+    <br>
+    <div>関数32</div>
+    <textarea id="expression32"></textarea>
+    <br>
+    <div>関数33</div>
+    <textarea id="expression33"></textarea>
+    <br>
+    <div>関数34</div>
+    <textarea id="expression34"></textarea>
+    <br>
+    <div>関数35</div>
+    <textarea id="expression35"></textarea>
+    <br>
+    <div>関数36</div>
+    <textarea id="expression36"></textarea>
+    <br>
+    <div>関数37</div>
+    <textarea id="expression37"></textarea>
+    <br>
+    <div>関数38</div>
+    <textarea id="expression38"></textarea>
+    <br>
+    <div>関数39</div>
+    <textarea id="expression39"></textarea>
+    <br>
+    <div>関数40</div>
+    <textarea id="expression40"></textarea>
+    <br>
+    <div>関数41</div>
+    <textarea id="expression41"></textarea>
+    <br>
+    <div>関数42</div>
+    <textarea id="expression42"></textarea>
+    <br>
+    <div>関数43</div>
+    <textarea id="expression43"></textarea>
+    <br>
+    <div>関数44</div>
+    <textarea id="expression44"></textarea>
+    <br>
+    <div>関数45</div>
+    <textarea id="expression45"></textarea>
+    <br>
+    <div>関数46</div>
+    <textarea id="expression46"></textarea>
+    <br>
+    <div>関数47</div>
+    <textarea id="expression47"></textarea>
+    <br>
+    <div>関数48</div>
+    <textarea id="expression48"></textarea>
+    <br>
+    <div>関数49</div>
+    <textarea id="expression49"></textarea>
+    <br>
+    <div>関数50</div>
+    <textarea id="expression50"></textarea>
+    <br>
+    <div>続行用関数</div>
+    <textarea id="continue"></textarea>
+    <br>
+    <input type="button" value="続行用関数を実行してシミュレーションを続行" id="continuecal">
+    <script>
+        // {a} = waitForInput();で待機
+        /*
+        function testfunc1 [
+            {a} = {a} + 1;
+        ];
+        function testfunc2 [
+            {a} = {a} + 1;
+            testfunc1;
+        ];
+        {a} = 1;
+        testfunc2;
+        {b} = {a};
+
+        {a} = 0;
+        function testfunc [
+        {a} = {a} + 1;
+        ];
+        if [
+        {a} == 0,
+        testfunc,
+        {a} = 0
+        ];
+
+
+        {a} = 0;
+        {i} = 0;
+        function testfunc [
+        {a} = {a} + 1;
+        {i} = {i} + 1;
+        ];
+        while [
+        {i} < 10,
+        testfunc
+        ];
+
+        {a} = 0;
+        {a} = waitForInput();
+        showtext [
+        a = {a}
+        ];
+        */
+        "use strict";
+
+        // 汎用トリガー関数,trigger(ID{input/buttonのid},トリガー,関数名)
+        function trigger(id, trigger, func) {
+            document.getElementById(id).addEventListener(trigger, function () {
+                func();
+            }, false);
+        }
+
+        // 汎用乱数関数,rand(最小値{実数},最大値{実数})
+        function rand(min, max) {
+            if (min == null || max == null) {
+                console.log("error:min or max is null.");
+            } else {
+                const minTypeof = typeof min;
+                const maxTypeof = typeof max;
+                if (minTypeof != "number" || maxTypeof != "number") {
+                    console.log("error:min or max is not number.");
+                    return 0;
+                } else if (min > max) {
+                    console.log("error:min > max");
+                    return 0;
+                } else {
+                    const random = Math.random();
+                    const rand = Math.round(((random * (max - min + 1)) + min) >= max + 0.5 ? min : (random * (max - min + 1)) + min);
+                    return rand;
+                }
+            }
+        }
+
+        // 汎用値取得関数,getValueById(ID{input/textareaのid})
+        function getValueById(id) {
+            const text = document.getElementById(id).value;
+            const result = text == null ? "" : text;
+            return result;
+        }
+
+        // 汎用要素変更関数,replaceInnerHTML(ID{div,p,span,textarea等のid},text)
+        function replaceInnerHTML(id, text) {
+            if (text == null) {
+                console.log("error:text is null.");
+            } else {
+                const element = document.getElementById(id);
+                element.innerHTML = text;
+            }
+        }
+
+        let variables = {
+            rand: 0,
+            func0: 0,
+func1: 0,
+func2: 0,
+func3: 0,
+func4: 0,
+func5: 0,
+func6: 0,
+func7: 0,
+func8: 0,
+func9: 0,
+func10: 0,
+func11: 0,
+func12: 0,
+func13: 0,
+func14: 0,
+func15: 0,
+func16: 0,
+func17: 0,
+func18: 0,
+func19: 0,
+func20: 0,
+func21: 0,
+func22: 0,
+func23: 0,
+func24: 0,
+func25: 0,
+func26: 0,
+func27: 0,
+func28: 0,
+func29: 0,
+func30: 0,
+func31: 0,
+func32: 0,
+func33: 0,
+func34: 0,
+func35: 0,
+func36: 0,
+func37: 0,
+func38: 0,
+func39: 0,
+func40: 0,
+func41: 0,
+func42: 0,
+func43: 0,
+func44: 0,
+func45: 0,
+func46: 0,
+func47: 0,
+func48: 0,
+func49: 0,
+func50: 0,
+            end: 0,
+            c1: {
+                maxHP: 1,
+                currentHP: 0,
+                maxMP: 1,
+                currentMP: 0,
+                icons: [],
+                skillCount: 0,
+                specialAvailable: 0
+            },
+c2: {
+                maxHP: 1,
+                currentHP: 0,
+                maxMP: 1,
+                currentMP: 0,
+                icons: [],
+                skillCount: 0,
+                specialAvailable: 0
+            },
+c3: {
+                maxHP: 1,
+                currentHP: 0,
+                maxMP: 1,
+                currentMP: 0,
+                icons: [],
+                skillCount: 0,
+                specialAvailable: 0
+            },
+c4: {
+                maxHP: 1,
+                currentHP: 0,
+                maxMP: 1,
+                currentMP: 0,
+                icons: [],
+                skillCount: 0,
+                specialAvailable: 0
+            },
+c5: {
+                maxHP: 1,
+                currentHP: 0,
+                maxMP: 1,
+                currentMP: 0,
+                icons: [],
+                skillCount: 0,
+                specialAvailable: 0
+            },
+c6: {
+                maxHP: 1,
+                currentHP: 0,
+                maxMP: 1,
+                currentMP: 0,
+                icons: [],
+                skillCount: 0,
+                specialAvailable: 0
+            },
+c7: {
+                maxHP: 1,
+                currentHP: 0,
+                maxMP: 1,
+                currentMP: 0,
+                icons: [],
+                skillCount: 0,
+                specialAvailable: 0
+            },
+c8: {
+                maxHP: 1,
+                currentHP: 0,
+                maxMP: 1,
+                currentMP: 0,
+                icons: [],
+                skillCount: 0,
+                specialAvailable: 0
+            },
+c9: {
+                maxHP: 1,
+                currentHP: 0,
+                maxMP: 1,
+                currentMP: 0,
+                icons: [],
+                skillCount: 0,
+                specialAvailable: 0
+            },
+c10: {
+                maxHP: 1,
+                currentHP: 0,
+                maxMP: 1,
+                currentMP: 0,
+                icons: [],
+                skillCount: 0,
+                specialAvailable: 0
+            }
+        };
+
+        function renderCharacters() {
+            const screen = document.getElementById('screen');
+            const enemyScreen = document.getElementById('enemyscreen');
+            screen.innerHTML = '';
+            enemyScreen.innerHTML = '';
+
+            for (let i = 1; i <= 10; i++) {
+                const character = variables['c' + i];
+                const characterDiv = document.createElement('div');
+                characterDiv.className = 'character';
+
+                const img = document.createElement('img');
+                img.className = 'character-img';
+                img.src = character.icons; // アイコンのURLを適切に設定してください
+                characterDiv.appendChild(img);
+
+                // HPバーの作成
+                const hpBarContainer = document.createElement('div');
+                hpBarContainer.className = 'bar-container';
+                const hpLabel = document.createElement('div');
+                hpLabel.className = 'label';
+                hpLabel.textContent = 'HP';
+                hpBarContainer.appendChild(hpLabel);
+
+                const hpDiv = document.createElement('div');
+                hpDiv.className = 'character-HP';
+                const greenDiv = document.createElement('div');
+                greenDiv.className = 'HP-bar';
+                greenDiv.style.backgroundColor = 'lightgreen';
+                greenDiv.style.width = `${(character.currentHP / character.maxHP) * 100}%`;
+                hpDiv.appendChild(greenDiv);
+                hpBarContainer.appendChild(hpDiv);
+
+                const hpValue = document.createElement('div');
+                hpValue.className = 'value';
+                hpValue.textContent = `${character.currentHP}/${character.maxHP}`;
+                hpBarContainer.appendChild(hpValue);
+
+                characterDiv.appendChild(hpBarContainer);
+
+                // MPバーの作成
+                const mpBarContainer = document.createElement('div');
+                mpBarContainer.className = 'bar-container';
+                const mpLabel = document.createElement('div');
+                mpLabel.className = 'label';
+                mpLabel.textContent = 'MP';
+                mpBarContainer.appendChild(mpLabel);
+
+                const mpDiv = document.createElement('div');
+                mpDiv.className = 'character-MP';
+                const blueDiv = document.createElement('div');
+                blueDiv.className = 'MP-bar';
+                blueDiv.style.backgroundColor = 'lightblue';
+                blueDiv.style.width = `${(character.currentMP / character.maxMP) * 100}%`;
+                mpDiv.appendChild(blueDiv);
+                mpBarContainer.appendChild(mpDiv);
+
+                const mpValue = document.createElement('div');
+                mpValue.className = 'value';
+                mpValue.textContent = `${character.currentMP}/${character.maxMP}`;
+                mpBarContainer.appendChild(mpValue);
+
+                characterDiv.appendChild(mpBarContainer);
+
+                // 待機スキルの残り発動回数の表示
+                const skillCountDiv = document.createElement('div');
+                skillCountDiv.textContent = `たいきスキル残り: ${character.skillCount}`;
+                skillCountDiv.className = 'skill-count';
+                characterDiv.appendChild(skillCountDiv);
+
+                // 大技発動可能かどうかの表示
+                const specialAvailableDiv = document.createElement('div');
+                specialAvailableDiv.textContent = `けものミラクル: ${character.specialAvailable != 0 ? "発動可" : "発動不可"}`;
+                specialAvailableDiv.className = 'special-available';
+                characterDiv.appendChild(specialAvailableDiv);
+
+                if (i <= 5) {
+                    screen.appendChild(characterDiv);
+                } else {
+                    enemyScreen.appendChild(characterDiv);
+                }
+            }
+        }
+
+// 初期状態のキャラクターを表示
+renderCharacters();
+
+        let log = "";
+        let inputReceived = false;
+        let userInput = "";
+        let textContent = "";
+
+        function waitForUserInput() {
+            return new Promise((resolve) => {
+                const inputField = document.getElementById("userInput");
+                const submitButton = document.getElementById("submitInput");
+
+                submitButton.addEventListener("click", function() {
+                    userInput = inputField.value;
+                    inputReceived = true;
+                    resolve(userInput);
+                });
+            });
+        }
+
+        async function processShowText(expression) {
+            const matches = expression.match(/showtext\s*\[(.*?)\]\s*/);
+            if (matches) {
+                textContent += matches[1];
+                // {}で囲まれた変数を値に置換
+                textContent = textContent.replace(/\{(.*?)\}/g, (match, key) => {
+                    const variable = getVariable(variables, key);
+                    if (variable !== undefined) {
+                        return variable;
+                    } else {
+                        throw new Error("Variable '" + key + "' not found");
+                    }
+                });
+                // テキストエリアに出力
+                document.getElementById('text').value = textContent;
+                textContent += "\n";
+            }
+        }
+
+        let userDefinedFunctions = {}; // ユーザー定義関数を保存するオブジェクト
+
+        async function calculate(expressionInput) {
+            try {
+                let expressions = splitExpressions(expressionInput); // 式を分割
+                for (const expression of expressions) {
+                    await evaluateAndAssign(expression.trim()); // 各式を評価
+                }
+            } catch (error) {
+                log += "Error: " + error.message + "\n";
+            }
+        }
+
+        // 式を正しく分割する関数を追加
+        function splitExpressions(input) {
+            let expressions = [];
+            let currentExpression = '';
+            let inFunctionDefinition = false;
+            let notpush = false;
+            let functionBody = '';
+            let inWhileLoop = false;
+            let whileLoopCondition = '';
+            let whileLoopBody = '';
+
+            for (let i = 0; i < input.length; i++) {
+                // 改行を無視する処理を追加
+                if (input[i] === '\n' || input[i] === '\r' || (notpush && input[i] === ';')) {
+                    notpush = false;
+                    continue;
+                }
+                if (input[i] === ']' && inFunctionDefinition) {
+                    inFunctionDefinition = false;
+                    notpush = true;
+                    functionBody += input[i];
+                    currentExpression += functionBody;
+                    expressions.push(currentExpression);
+                    currentExpression = '';
+                    functionBody = '';
+                    continue;
+                }
+
+                if (inFunctionDefinition) {
+                    functionBody += input[i];
+                } else if (inWhileLoop) {
+                    if (input[i] === ']') {
+                        whileLoopBody += input[i];
+                        expressions.push(`while [${whileLoopCondition.trim()},${whileLoopBody.trim()}]`);
+                        inWhileLoop = false;
+                        whileLoopCondition = '';
+                        whileLoopBody = '';
+                    } else {
+                        whileLoopBody += input[i];
+                    }
+                } else {
+                    if (input[i] === '[') {
+                        if (input.substring(i, i + 6) === 'while ') {
+                            inWhileLoop = true;
+                            i += 5;
+                        } else {
+                            inFunctionDefinition = true;
+                        }
+                        currentExpression += input[i];
+                    } else if (input[i] === ';') {
+                        expressions.push(currentExpression);
+                        currentExpression = '';
+                    } else {
+                        currentExpression += input[i];
+                    }
+                }
+            }
+
+            if (currentExpression.trim() !== '') {
+                expressions.push(currentExpression);
+            }
+
+            return expressions;
+        }
+
+        // 関数定義と実行の処理を追加
+        async function evaluateAndAssign(expression) {
+            if (variables.end == 0) {
+                // showtext式のパターンをチェック
+                let showTextMatch = expression.match(/^showtext\s*\[(.*?)\]\s*$/);
+                if (showTextMatch) {
+                    await processShowText(expression);
+                    return;
+                }
+
+                // whileループのパターンをチェック
+                let whileLoopMatch = expression.match(/^while\s*\[(.*?),(.*)\]\s*$/s);
+                if (whileLoopMatch) {
+                    let condition = whileLoopMatch[1];
+                    let body = whileLoopMatch[2];
+                    while (evaluateExpression(condition)) {
+                        await evaluateAndAssign(body.trim());
+                    }
+                    return;
+                }
+
+                // if条件分岐のパターンをチェック
+                let ifConditionMatch = expression.match(/^if\s*\[(.*?),(.*?),(.*?)\]\s*$/s);
+                if (ifConditionMatch) {
+                    let condition = ifConditionMatch[1];
+                    let trueExpression = ifConditionMatch[2];
+                    let falseExpression = ifConditionMatch[3];
+
+                    if (evaluateExpression(condition)) {
+                        await evaluateAndAssign(trueExpression.trim());
+                    } else {
+                        await evaluateAndAssign(falseExpression.trim());
+                    }
+                    return;
+                }
+
+                // 関数定義のパターンをチェック
+                let functionDefinitionMatch = expression.match(/^function\s+(\w+)\s*\[(.*)\]\s*$/s);
+                if (functionDefinitionMatch) {
+                    let functionName = functionDefinitionMatch[1];
+                    let functionBody = functionDefinitionMatch[2];
+                    userDefinedFunctions[functionName] = functionBody; // 関数内容全体を保存
+                    return;
+                }
+
+                // 関数実行のパターンをチェック
+                let functionExecutionMatch = expression.match(/^(\w+)\s*$/);
+                if (functionExecutionMatch) {
+                    let functionName = functionExecutionMatch[1];
+                    if (userDefinedFunctions[functionName]) {
+                        let functionBody = userDefinedFunctions[functionName];
+                        let expressions = functionBody.split(';').map(line => line.trim()).filter(line => line);
+                        for (let funcExpr of expressions) {
+                            await evaluateAndAssign(funcExpr);
+                        }
+                        return;
+                    } else {
+                        throw new Error("Function '" + functionName + "' is not defined");
+                    }
+                }
+
+                // 変数代入のパターンをチェック
+                const matches = expression.match(/\{(.*?)\}\s*=\s*(.*?)(?=\s*;|$)/);
+                if (matches) {
+                    const variableName = matches[1];
+                    let formula = matches[2];
+
+                    // 特定のユーザーアクションを待つ条件
+                    if (formula.includes("waitForInput()")) {
+                        log += "ユーザーの入力を待っています...\n";
+                        replaceInnerHTML("result", log);
+                        formula = formula.replace("waitForInput()", await waitForUserInput());
+                    }
+
+                    const result = evaluateExpression(formula); // 式を評価
+                    setVariable(variables, variableName, result); // 変数に結果を代入
+                } else {
+                    throw new Error("Invalid expression format: " + expression);
+                }
+            }
+        }
+
+        // 変数に結果を代入する関数
+        function setVariable(obj, path, value) {
+            const keys = path.split('$');
+            let currentObj = obj;
+            for (let i = 0; i < keys.length - 1; i++) {
+                const key = keys[i];
+                if (!(key in currentObj)) {
+                    currentObj[key] = {};
+                }
+                currentObj = currentObj[key];
+            }
+            currentObj[keys[keys.length - 1]] = value;
+            log += path + ":" + value + "\n";
+        }
+
+        // 式を評価する関数
+        function evaluateExpression(expression) {
+            variables.rand = rand(0, 1000000);
+            // ドル記号を置換する
+            expression = expression.replace(/\{(.*?)\}/g, (match, key) => {
+                const variable = getVariable(variables, key);
+                if (variable !== undefined) {
+                    return variable;
+                } else {
+                    throw new Error("Variable '" + key + "' not found");
+                }
+            });
+
+            if (!/^[\d+\-*/()^?<!>=&|:%\s.]+$/.test(expression)) {
+                throw new Error("Invalid characters in expression: " + expression);
+            }
+            if (!parenthesesAreBalanced(expression)) {
+                throw new Error("Unbalanced parentheses in expression: " + expression);
+            }
+            const result = Math.round(Function('variables', 'return ' + expression)(variables) * 10000000) / 10000000; // 式を評価
+            return result;
+        }
+
+        // 指定されたパスの変数の値を取得する関数
+        function getVariable(obj, path) {
+            const keys = path.split('$');
+            let currentObj = obj;
+            for (let key of keys) {
+                if (!(key in currentObj)) {
+                    return undefined;
+                }
+                currentObj = currentObj[key];
+            }
+            return currentObj;
+        }
+
+        // 括弧がバランスしているかどうかをチェックする関数
+        function parenthesesAreBalanced(expression) {
+            let count = 0;
+            for (let char of expression) {
+                if (char === '(') {
+                    count++;
+                } else if (char === ')') {
+                    count--;
+                }
+                if (count < 0) {
+                    return false;
+                }
+            }
+            return count === 0;
+        }
+
+        async function cal() {
+            let expressionInput = getValueById("default");
+            let count = 0;
+            let loopcount = 0;
+            log = "";
+            userDefinedFunctions = {};
+            inputReceived = false;
+            userInput = "";
+            textContent = "";
+            variables.end = 0;
+            await calculate(expressionInput);
+            renderCharacters();
+            for (let i = 0; variables.end == 0 && loopcount <= 5000;) {
+                count = 0;
+                if (variables.func0 != 0 && variables.end == 0) {
+                    variables.func0 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression0");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func1 != 0 && variables.end == 0) {
+                    variables.func1 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression1");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func2 != 0 && variables.end == 0) {
+                    variables.func2 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression2");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func3 != 0 && variables.end == 0) {
+                    variables.func3 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression3");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func4 != 0 && variables.end == 0) {
+                    variables.func4 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression4");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func5 != 0 && variables.end == 0) {
+                    variables.func5 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression5");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func6 != 0 && variables.end == 0) {
+                    variables.func6 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression6");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func7 != 0 && variables.end == 0) {
+                    variables.func7 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression7");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func8 != 0 && variables.end == 0) {
+                    variables.func8 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression8");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func9 != 0 && variables.end == 0) {
+                    variables.func9 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression9");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func10 != 0 && variables.end == 0) {
+                    variables.func10 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression10");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func11 != 0 && variables.end == 0) {
+                    variables.func11 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression11");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func12 != 0 && variables.end == 0) {
+                    variables.func12 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression12");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func13 != 0 && variables.end == 0) {
+                    variables.func13 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression13");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func14 != 0 && variables.end == 0) {
+                    variables.func14 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression14");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func15 != 0 && variables.end == 0) {
+                    variables.func15 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression15");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func16 != 0 && variables.end == 0) {
+                    variables.func16 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression16");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func17 != 0 && variables.end == 0) {
+                    variables.func17 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression17");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func18 != 0 && variables.end == 0) {
+                    variables.func18 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression18");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func19 != 0 && variables.end == 0) {
+                    variables.func19 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression19");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func20 != 0 && variables.end == 0) {
+                    variables.func20 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression20");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func21 != 0 && variables.end == 0) {
+                    variables.func21 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression21");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func22 != 0 && variables.end == 0) {
+                    variables.func22 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression22");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func23 != 0 && variables.end == 0) {
+                    variables.func23 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression23");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func24 != 0 && variables.end == 0) {
+                    variables.func24 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression24");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func25 != 0 && variables.end == 0) {
+                    variables.func25 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression25");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func26 != 0 && variables.end == 0) {
+                    variables.func26 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression26");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func27 != 0 && variables.end == 0) {
+                    variables.func27 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression27");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func28 != 0 && variables.end == 0) {
+                    variables.func28 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression28");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func29 != 0 && variables.end == 0) {
+                    variables.func29 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression29");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func30 != 0 && variables.end == 0) {
+                    variables.func30 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression30");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func31 != 0 && variables.end == 0) {
+                    variables.func31 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression31");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func32 != 0 && variables.end == 0) {
+                    variables.func32 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression32");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func33 != 0 && variables.end == 0) {
+                    variables.func33 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression33");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func34 != 0 && variables.end == 0) {
+                    variables.func34 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression34");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func35 != 0 && variables.end == 0) {
+                    variables.func35 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression35");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func36 != 0 && variables.end == 0) {
+                    variables.func36 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression36");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func37 != 0 && variables.end == 0) {
+                    variables.func37 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression37");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func38 != 0 && variables.end == 0) {
+                    variables.func38 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression38");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func39 != 0 && variables.end == 0) {
+                    variables.func39 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression39");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func40 != 0 && variables.end == 0) {
+                    variables.func40 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression40");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func41 != 0 && variables.end == 0) {
+                    variables.func41 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression41");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func42 != 0 && variables.end == 0) {
+                    variables.func42 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression42");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func43 != 0 && variables.end == 0) {
+                    variables.func43 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression43");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func44 != 0 && variables.end == 0) {
+                    variables.func44 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression44");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func45 != 0 && variables.end == 0) {
+                    variables.func45 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression45");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func46 != 0 && variables.end == 0) {
+                    variables.func46 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression46");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func47 != 0 && variables.end == 0) {
+                    variables.func47 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression47");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func48 != 0 && variables.end == 0) {
+                    variables.func48 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression48");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func49 != 0 && variables.end == 0) {
+                    variables.func49 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression49");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func50 != 0 && variables.end == 0) {
+                    variables.func50 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression50");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+                loopcount++;
+                replaceInnerHTML("result", log);
+                if (count == 0) {
+                    log += "このループでは何も実行されません。\n";
+                    replaceInnerHTML("result", log);
+                    break;
+                }
+            }
+            log += "ループ上限に達したため、強制的にループを停止します。\n";
+            replaceInnerHTML("result", log);
+        }
+
+        async function continuecal() {
+            let expressionInput = getValueById("continue");
+            let count = 0;
+            let loopcount = 0;
+            variables.end = 0;
+            inputReceived = false;
+            userInput = "";
+            await calculate(expressionInput);
+            renderCharacters();
+            for (let i = 0; variables.end == 0 && loopcount <= 5000;) {
+                count = 0;
+                if (variables.func0 != 0 && variables.end == 0) {
+                    variables.func0 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression0");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func1 != 0 && variables.end == 0) {
+                    variables.func1 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression1");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func2 != 0 && variables.end == 0) {
+                    variables.func2 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression2");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func3 != 0 && variables.end == 0) {
+                    variables.func3 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression3");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func4 != 0 && variables.end == 0) {
+                    variables.func4 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression4");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func5 != 0 && variables.end == 0) {
+                    variables.func5 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression5");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func6 != 0 && variables.end == 0) {
+                    variables.func6 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression6");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func7 != 0 && variables.end == 0) {
+                    variables.func7 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression7");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func8 != 0 && variables.end == 0) {
+                    variables.func8 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression8");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func9 != 0 && variables.end == 0) {
+                    variables.func9 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression9");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func10 != 0 && variables.end == 0) {
+                    variables.func10 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression10");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func11 != 0 && variables.end == 0) {
+                    variables.func11 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression11");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func12 != 0 && variables.end == 0) {
+                    variables.func12 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression12");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func13 != 0 && variables.end == 0) {
+                    variables.func13 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression13");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func14 != 0 && variables.end == 0) {
+                    variables.func14 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression14");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func15 != 0 && variables.end == 0) {
+                    variables.func15 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression15");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func16 != 0 && variables.end == 0) {
+                    variables.func16 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression16");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func17 != 0 && variables.end == 0) {
+                    variables.func17 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression17");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func18 != 0 && variables.end == 0) {
+                    variables.func18 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression18");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func19 != 0 && variables.end == 0) {
+                    variables.func19 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression19");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func20 != 0 && variables.end == 0) {
+                    variables.func20 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression20");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func21 != 0 && variables.end == 0) {
+                    variables.func21 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression21");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func22 != 0 && variables.end == 0) {
+                    variables.func22 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression22");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func23 != 0 && variables.end == 0) {
+                    variables.func23 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression23");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func24 != 0 && variables.end == 0) {
+                    variables.func24 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression24");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func25 != 0 && variables.end == 0) {
+                    variables.func25 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression25");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func26 != 0 && variables.end == 0) {
+                    variables.func26 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression26");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func27 != 0 && variables.end == 0) {
+                    variables.func27 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression27");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func28 != 0 && variables.end == 0) {
+                    variables.func28 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression28");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func29 != 0 && variables.end == 0) {
+                    variables.func29 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression29");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func30 != 0 && variables.end == 0) {
+                    variables.func30 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression30");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func31 != 0 && variables.end == 0) {
+                    variables.func31 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression31");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func32 != 0 && variables.end == 0) {
+                    variables.func32 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression32");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func33 != 0 && variables.end == 0) {
+                    variables.func33 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression33");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func34 != 0 && variables.end == 0) {
+                    variables.func34 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression34");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func35 != 0 && variables.end == 0) {
+                    variables.func35 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression35");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func36 != 0 && variables.end == 0) {
+                    variables.func36 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression36");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func37 != 0 && variables.end == 0) {
+                    variables.func37 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression37");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func38 != 0 && variables.end == 0) {
+                    variables.func38 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression38");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func39 != 0 && variables.end == 0) {
+                    variables.func39 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression39");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func40 != 0 && variables.end == 0) {
+                    variables.func40 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression40");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func41 != 0 && variables.end == 0) {
+                    variables.func41 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression41");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func42 != 0 && variables.end == 0) {
+                    variables.func42 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression42");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func43 != 0 && variables.end == 0) {
+                    variables.func43 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression43");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func44 != 0 && variables.end == 0) {
+                    variables.func44 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression44");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func45 != 0 && variables.end == 0) {
+                    variables.func45 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression45");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func46 != 0 && variables.end == 0) {
+                    variables.func46 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression46");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func47 != 0 && variables.end == 0) {
+                    variables.func47 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression47");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func48 != 0 && variables.end == 0) {
+                    variables.func48 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression48");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func49 != 0 && variables.end == 0) {
+                    variables.func49 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression49");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+ if (variables.func50 != 0 && variables.end == 0) {
+                    variables.func50 = 0;
+                    count = 1;
+                    expressionInput = getValueById("expression50");
+                    await calculate(expressionInput);
+                    renderCharacters();
+                }
+                loopcount++;
+                replaceInnerHTML("result", log);
+                if (count == 0) {
+                    log += "このループでは何も実行されません。\n";
+                    replaceInnerHTML("result", log);
+                    break;
+                }
+            }
+            log += "ループ上限に達したため、強制的にループを停止します。\n";
+            replaceInnerHTML("result", log);
+        }
+
+        function exportData() {
+            const data = {
+                icon1: getValueById('icon1'),
+                icon2: getValueById('icon2'),
+                icon3: getValueById('icon3'),
+                icon4: getValueById('icon4'),
+                icon5: getValueById('icon5'),
+                icon6: getValueById('icon6'),
+                icon7: getValueById('icon7'),
+                icon8: getValueById('icon8'),
+                icon9: getValueById('icon9'),
+                icon10: getValueById('icon10'),
+                default: getValueById('default'),
+                expression0: getValueById('expression0'),
+expression1: getValueById('expression1'),
+expression2: getValueById('expression2'),
+expression3: getValueById('expression3'),
+expression4: getValueById('expression4'),
+expression5: getValueById('expression5'),
+expression6: getValueById('expression6'),
+expression7: getValueById('expression7'),
+expression8: getValueById('expression8'),
+expression9: getValueById('expression9'),
+expression10: getValueById('expression10'),
+expression11: getValueById('expression11'),
+expression12: getValueById('expression12'),
+expression13: getValueById('expression13'),
+expression14: getValueById('expression14'),
+expression15: getValueById('expression15'),
+expression16: getValueById('expression16'),
+expression17: getValueById('expression17'),
+expression18: getValueById('expression18'),
+expression19: getValueById('expression19'),
+expression20: getValueById('expression20'),
+expression21: getValueById('expression21'),
+expression22: getValueById('expression22'),
+expression23: getValueById('expression23'),
+expression24: getValueById('expression24'),
+expression25: getValueById('expression25'),
+expression26: getValueById('expression26'),
+expression27: getValueById('expression27'),
+expression28: getValueById('expression28'),
+expression29: getValueById('expression29'),
+expression30: getValueById('expression30'),
+expression31: getValueById('expression31'),
+expression32: getValueById('expression32'),
+expression33: getValueById('expression33'),
+expression34: getValueById('expression34'),
+expression35: getValueById('expression35'),
+expression36: getValueById('expression36'),
+expression37: getValueById('expression37'),
+expression38: getValueById('expression38'),
+expression39: getValueById('expression39'),
+expression40: getValueById('expression40'),
+expression41: getValueById('expression41'),
+expression42: getValueById('expression42'),
+expression43: getValueById('expression43'),
+expression44: getValueById('expression44'),
+expression45: getValueById('expression45'),
+expression46: getValueById('expression46'),
+expression47: getValueById('expression47'),
+expression48: getValueById('expression48'),
+expression49: getValueById('expression49'),
+expression50: getValueById('expression50'),
+                continue: getValueById('continue')
+            };
+
+            const jsonString = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "Data" + "-" + Date.now() + "-" +(Math.round(Math.random() * 100000000000)) + ".json";
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importData() {
+            const fileInput = document.getElementById('importData');
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const contents = e.target.result;
+                        const data = JSON.parse(contents);
+                        document.getElementById('icon1').value = data.icon1 || '';
+                        document.getElementById('icon2').value = data.icon2 || '';
+                        document.getElementById('icon3').value = data.icon3 || '';
+                        document.getElementById('icon4').value = data.icon4 || '';
+                        document.getElementById('icon5').value = data.icon5 || '';
+                        document.getElementById('icon6').value = data.icon6 || '';
+                        document.getElementById('icon7').value = data.icon7 || '';
+                        document.getElementById('icon8').value = data.icon8 || '';
+                        document.getElementById('icon9').value = data.icon9 || '';
+                        document.getElementById('icon10').value = data.icon10 || '';
+                        document.getElementById('default').value = data.default || '';
+
+                        for (let i = 0; i <= 50; i++) {
+                            const expressionElement = document.getElementById('expression' + i);
+                            if (expressionElement) {
+                                expressionElement.value = data['expression' + i] || '';
+                            } else {
+                                console.warn('Element with ID expression' + i + ' not found.');
+                            }
+                        }
+                        document.getElementById('continue').value = data.continue || '';
+                    } catch (error) {
+                        console.error("Error parsing JSON:", error);
+                        alert("JSONの読み込み中にエラーが発生しました。JSONファイルの形式を確認してください。");
+                    }
+                };
+                reader.readAsText(file);
+            } else {
+                alert("ファイルが選択されていません。");
+            }
+        }
+
+        function setIcon() {
+            const icon1 = document.getElementById("icon1").value;
+            const icon2 = document.getElementById("icon2").value;
+            const icon3 = document.getElementById("icon3").value;
+            const icon4 = document.getElementById("icon4").value;
+            const icon5 = document.getElementById("icon5").value;
+            const icon6 = document.getElementById("icon6").value;
+            const icon7 = document.getElementById("icon7").value;
+            const icon8 = document.getElementById("icon8").value;
+            const icon9 = document.getElementById("icon9").value;
+            const icon10 = document.getElementById("icon10").value;
+            variables.c1.icons = icon1;
+            variables.c2.icons = icon2;
+            variables.c3.icons = icon3;
+            variables.c4.icons = icon4;
+            variables.c5.icons = icon5;
+            variables.c6.icons = icon6;
+            variables.c7.icons = icon7;
+            variables.c8.icons = icon8;
+            variables.c9.icons = icon9;
+            variables.c10.icons = icon10;
+            renderCharacters();
+        }
+
+        trigger("calculate", "click", cal);
+        trigger("continuecal", "click", continuecal);
+        trigger("exportData", "click", exportData);
+        trigger("importData", "change", importData);
+        trigger("setIcon","click",setIcon);
+    </script>
+</body>
+</html>
