@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>一度だけ押せるボタン</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const oneTimeButton = document.getElementById("one-time-button");
+            const resetButton = document.getElementById("reset-button");
+            const buttonClicked = localStorage.getItem("buttonClicked");
+
+            if (buttonClicked) {
+                oneTimeButton.disabled = true;
+                oneTimeButton.textContent = "このボタンはすでに押されました";
+            }
+
+            oneTimeButton.addEventListener("click", function() {
+                localStorage.setItem("buttonClicked", "true");
+                oneTimeButton.disabled = true;
+                oneTimeButton.textContent = "このボタンはすでに押されました";
+            });
+
+            resetButton.addEventListener("click", function() {
+                localStorage.removeItem("buttonClicked");
+                oneTimeButton.disabled = false;
+                oneTimeButton.textContent = "一度だけ押せるボタン";
+            });
+        });
+    </script>
+</head>
+<body>
+    <button id="one-time-button">一度だけ押せるボタン</button>
+    <button id="reset-button">解除ボタン</button>
+</body>
+</html>
