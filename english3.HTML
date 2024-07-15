@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java 基本とOOPの概念</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        code {
+            background-color: #272822;
+            color: #f8f8f2;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        pre {
+            background-color: #272822;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 4px;
+            overflow: auto;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .code-block {
+            margin: 20px 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Java 基本とOOPの概念</h1>
+
+        <div class="section">
+            <h2>1. 基本的な文法と構文の理解</h2>
+
+            <h3>データ型と変数</h3>
+            <div class="code-block">
+                <pre><code>public class DataTypes {
+    public static void main(String[] args) {
+        // プリミティブ型
+        int num = 10;                // 整数型
+        double price = 19.99;        // 小数型
+        boolean isAvailable = true;  // 真偽型
+
+        // 参照型
+        String message = "Hello, World!";  // 文字列型
+
+        // 変数の出力
+        System.out.println("Number: " + num);
+        System.out.println("Price: " + price);
+        System.out.println("Available: " + isAvailable);
+        System.out.println("Message: " + message);
+    }
+}</code></pre>
+            </div>
+
+            <h3>制御構造</h3>
+            <div class="code-block">
+                <pre><code>public class ControlStructures {
+    public static void main(String[] args) {
+        int score = 85;
+
+        // if文
+        if (score >= 90) {
+            System.out.println("Excellent");
+        } else if (score >= 75) {
+            System.out.println("Good");
+        } else {
+            System.out.println("Needs Improvement");
+        }
+
+        // switch文
+        char grade = 'B';
+        switch (grade) {
+            case 'A':
+                System.out.println("Excellent");
+                break;
+            case 'B':
+                System.out.println("Good");
+                break;
+            case 'C':
+                System.out.println("Average");
+                break;
+            default:
+                System.out.println("Fail");
+        }
+
+        // forループ
+        for (int i = 1; i <= 5; i++) {
+            System.out.println("Count: " + i);
+        }
+
+        // whileループ
+        int count = 5;
+        while (count > 0) {
+            System.out.println("Countdown: " + count);
+            count--;
+        }
+    }
+}</code></pre>
+            </div>
+
+            <h3>配列と配列を使用した特別な記法</h3>
+            <div class="code-block">
+                <pre><code>public class ArraysExample {
+    public static void main(String[] args) {
+        // 配列の宣言と初期化
+        int[] numbers = {1, 2, 3, 4, 5};
+        
+        // 配列要素のアクセス
+        System.out.println("First element: " + numbers[0]);
+
+        // 配列の長さ
+        System.out.println("Length of array: " + numbers.length);
+
+        // for-eachループによる配列要素の走査
+        for (int number : numbers) {
+            System.out.println("Number: " + number);
+        }
+    }
+}</code></pre>
+            </div>
+
+            <h3>メソッド</h3>
+            <div class="code-block">
+                <pre><code>public class Methods {
+    public static void main(String[] args) {
+        int result = add(5, 3);
+        System.out.println("Sum: " + result);
+    }
+
+    // メソッドの定義
+    public static int add(int a, int b) {
+        return a + b;
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. オブジェクト指向プログラミング（OOP）の概念</h2>
+
+            <h3>クラスとオブジェクト</h3>
+            <div class="code-block">
+                <pre><code>public class Dog {
+    // フィールド（属性）
+    String name;
+    int age;
+
+    // コンストラクタ
+    public Dog(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    // メソッド（動作）
+    public void bark() {
+        System.out.println(name + " is barking!");
+    }
+
+    public static void main(String[] args) {
+        // オブジェクトの生成
+        Dog myDog = new Dog("Buddy", 3);
+        myDog.bark();  // メソッドの呼び出し
+    }
+}</code></pre>
+            </div>
+
+            <h3>メソッドとインスタンスメソッド</h3>
+            <div class="code-block">
+                <pre><code>public class MethodExample {
+    // クラスメソッド
+    public static void staticMethod() {
+        System.out.println("This is a static method.");
+    }
+
+    // インスタンスメソッド
+    public void instanceMethod() {
+        System.out.println("This is an instance method.");
+    }
+
+    public static void main(String[] args) {
+        // クラスメソッドの呼び出し
+        MethodExample.staticMethod();
+
+        // インスタンスメソッドの呼び出し
+        MethodExample example = new MethodExample();
+        example.instanceMethod();
+    }
+}</code></pre>
+            </div>
+
+            <h3>インスタンスの生成（通常バージョンと配列を使用したバージョン）</h3>
+            <div class="code-block">
+                <pre><code>public class Dog {
+    String name;
+
+    // コンストラクタ
+    public Dog(String name) {
+        this.name = name;
+    }
+
+    public void bark() {
+        System.out.println(name + " is barking!");
+    }
+
+    public static void main(String[] args) {
+        // 通常のインスタンス生成
+        Dog myDog = new Dog("Buddy");
+        myDog.bark();
+
+        // 配列を使用したインスタンス生成
+        Dog[] dogArray = new Dog[2];
+        dogArray[0] = new Dog("Max");
+        dogArray[1] = new Dog("Bella");
+
+        for (Dog dog : dogArray) {
+            dog.bark();
+        }
+    }
+}</code></pre>
+            </div>
+
+            <h3>継承、抽象クラス、インターフェース</h3>
+            <div class="code-block">
+                <pre><code>// 抽象クラス
+abstract class Animal {
+    String name;
+
+    // 抽象メソッド
+    abstract void makeSound();
+
+    public void eat() {
+        System.out.println(name + " is eating.");
+    }
+}
+
+// インターフェース
+interface Pet {
+    void play();
+}
+
+// サブクラス
+class Cat extends Animal implements Pet {
+    public Cat(String name) {
+        this.name = name;
+    }
+
+    @Override
+    void makeSound() {
+        System.out.println(name + " says meow!");
+    }
+
+    @Override
+    public void play() {
+        System.out.println(name + " is playing.");
+    }
+
+    public static void main(String[] args) {
+        Cat myCat = new Cat("Whiskers");
+        myCat.makeSound();
+        myCat.eat();
+        myCat.play();
+    }
+}</code></pre>
+            </div>
+
+            <h3>カプセル化における <code>protected</code> キーワード</h3>
+            <div class="code-block">
+                <pre><code>public class Animal {
+    protected String name;
+
+    public void eat() {
+        System.out.println(name + " is eating.");
+    }
+}
+
+public class Dog extends Animal {
+    public void bark() {
+        System.out.println(name + " is barking!");
+    }
+
+    public static void main(String[] args) {
+        Dog myDog = new Dog();
+        myDog.name = "Buddy"; // protectedフィールドにアクセス
+        myDog.eat();
+        myDog.bark();
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. 標準ライブラリの利用</h2>
+
+            <h3>Scannerクラスの利用</h3>
+            <div class="code-block">
+                <pre><code>import java.util.Scanner;
+
+public class ScannerExample {
+    public static void main(String[] args) {
+        // Scannerオブジェクトの作成（標準入力を読み取る）
+        Scanner scanner = new Scanner(System.in);
+
+        // 整数の入力
+        System.out.print("Enter an integer: ");
+        int number = scanner.nextInt();
+
+        // 文字列の入力
+        System.out.print("Enter a string: ");
+        String text = scanner.next();
+
+        // スキャナの終了
+        scanner.close();
+
+        // 入力結果の表示
+        System.out.println("You entered integer: " + number);
+        System.out.println("You entered string: " + text);
+    }
+}</code></pre>
+            </div>
+
+            <h3>Randomクラスの利用</h3>
+            <div class="code-block">
+                <pre><code>import java.util.Random;
+
+public class RandomExample {
+    public static void main(String[] args) {
+        // Randomオブジェクトの作成
+        Random random = new Random();
+
+        // 0から99までのランダムな整数を生成
+        int randomNumber = random.nextInt(100);
+
+        // 0.0から1.0までのランダムな小数を生成
+        double randomDouble = random.nextDouble();
+
+        // trueまたはfalseのランダムな値を生成
+        boolean randomBoolean = random.nextBoolean();
+
+        // 生成されたランダムな値の表示
+        System.out.println("Random integer (0-99): " + randomNumber);
+        System.out.println("Random double (0.0-1.0): " + randomDouble);
+        System.out.println("Random boolean: " + randomBoolean);
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>4. エラーハンドリング</h2>
+
+            <h3>例外処理の基本</h3>
+            <div class="code-block">
+                <pre><code>public class ExceptionHandling {
+    public static void main(String[] args) {
+        try {
+            int result = divide(10, 0);
+            System.out.println("Result: " + result);
+        } catch (ArithmeticException e) {
+            System.out.println("Error: Division by zero is not allowed.");
+        } finally {
+            System.out.println("Execution completed.");
+        }
+    }
+
+    public static int divide(int a, int b) {
+        return a / b;
+    }
+}</code></pre>
+            </div>
+
+            <h3>例外の種類</h3>
+
+            <h4>検査例外の例</h4>
+            <div class="code-block">
+                <pre><code>import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class CheckedExceptionExample {
+    public static void main(String[] args) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("example.txt"));
+            String line = reader.readLine();
+            System.out.println(line);
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+}</code></pre>
+            </div>
+
+            <h4>非検査例外の例</h4>
+            <div class="code-block">
+                <pre><code>public class UncheckedExceptionExample {
+    public static void main(String[] args) {
+        try {
+            int[] numbers = {1, 2, 3};
+            System.out.println(numbers[5]); // 配列の範囲外アクセス
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+}</code></pre>
+            </div>
+
+            <h3>カスタム例外の作成</h3>
+            <div class="code-block">
+                <pre><code>// カスタム例外クラス
+class CustomException extends Exception {
+    public CustomException(String message) {
+        super(message);
+    }
+}
+
+public class CustomExceptionExample {
+    public static void main(String[] args) {
+        try {
+            validateAge(15);
+        } catch (CustomException e) {
+            System.out.println("Caught custom exception: " + e.getMessage());
+        }
+    }
+
+    // 年齢を検証するメソッド
+    public static void validateAge(int age) throws CustomException {
+        if (age < 18) {
+            throw new CustomException("Age must be 18 or older.");
+        }
+        System.out.println("Age is valid.");
+    }
+}</code></pre>
+            </div>
+
+            <h3>マルチキャッチブロック</h3>
+            <div class="code-block">
+                <pre><code>public class MultiCatchExample {
+    public static void main(String[] args) {
+        try {
+            int[] numbers = {1, 2, 3};
+            System.out.println(numbers[5]); // 配列の範囲外アクセス
+            int result = 10 / 0; // ゼロによる除算
+        } catch (ArrayIndexOutOfBoundsException | ArithmeticException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+}</code></pre>
+            </div>
+
+            <h3>例外チェーン</h3>
+            <div class="code-block">
+                <pre><code>public class ExceptionChainingExample {
+    public static void main(String[] args) {
+        try {
+            method1();
+        } catch (Exception e) {
+            System.out.println("Caught: " + e);
+            System.out.println("Cause: " + e.getCause());
+        }
+    }
+
+    public static void method1() throws Exception {
+        try {
+            method2();
+        } catch (Exception e) {
+            throw new Exception("Exception in method1", e);
+        }
+    }
+
+    public static void method2() throws Exception {
+        throw new Exception("Exception in method2");
+    }
+}</code></pre>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
