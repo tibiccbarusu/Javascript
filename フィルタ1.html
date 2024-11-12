@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3x3格子の中央値更新</title>
+    <style>
+        .container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 50px);
+            grid-template-rows: repeat(3, 50px);
+            gap: 5px;
+        }
+        .grid-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            background-color: #f0f0f0;
+            border: 1px solid #333;
+            width: 50px;
+            height: 50px;
+        }
+        .arrow {
+            font-size: 2em;
+        }
+        .median-display {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        .highlight {
+            background-color: #ffd700; /* 中央値が設定されたセルをハイライト */
+        }
+    </style>
+</head>
+<body>
+
+<div class="median-display" id="medianDisplay">中央値: 計算中...</div>
+<div class="container">
+    <div class="grid-container" id="originalGridContainer">
+        <!-- 元の格子がここに表示される -->
+    </div>
+    <div class="arrow">→</div>
+    <div class="grid-container" id="updatedGridContainer">
+        <!-- 中央の格子に中央値を代入した変化後の格子がここに表示される -->
+    </div>
+</div>
+
+<script>
+    function generateRandomValues() {
+        const values = [];
+
+        // 9個のランダムな値を生成
+        for (let i = 0; i < 9; i++) {
+            const randomValue = Math.floor(Math.random() * 10);
+            values.push(randomValue);
+        }
+
+        return values;
+    }
+
+    function calculateMedian(values) {
+        // 元の値の配列をコピーしてソートし、中央値を計算
+        const sortedValues = [...values].sort((a, b) => a - b);
+        const median = sortedValues[Math.floor(sortedValues.length / 2)];
+        return median;
+    }
+
+    function displayGrids() {
+        const values = generateRandomValues();
+        const median = calculateMedian(values);
+        document.getElementById("medianDisplay").textContent = `中央値: ${median}`;
+
+        // 元の格子を表示
+        const originalGridContainer = document.getElementById("originalGridContainer");
+        originalGridContainer.innerHTML = "";
+        values.forEach(value => {
+            const cell = document.createElement("div");
+            cell.classList.add("grid-item");
+            cell.textContent = value;
+            originalGridContainer.appendChild(cell);
+        });
+
+        // 変化後の格子を表示（中央のみ中央値に置き換え）
+        const updatedGridContainer = document.getElementById("updatedGridContainer");
+        updatedGridContainer.innerHTML = "";
+        values.forEach((value, index) => {
+            const cell = document.createElement("div");
+            cell.classList.add("grid-item");
+            // 中央の格子（インデックス4）のみ中央値に置き換える
+            cell.textContent = index === 4 ? median : value;
+            if (index === 4) {
+                cell.classList.add("highlight"); // 中央格子にハイライトを追加
+            }
+            updatedGridContainer.appendChild(cell);
+        });
+    }
+
+    // ページ読み込み時に実行
+    window.onload = displayGrids;
+</script>
+
+</body>
+</html>
