@@ -201,7 +201,7 @@ export class Execute {
 			throw new Error(`フィールド "${name}" が存在しません。`);
 		}
 
-		this.intervals[name] = setInterval(callback, interval);
+		this.fieldManager.intervals[name] = setInterval(callback, interval);
 		console.log(`フィールド "${name}" で関数を ${interval}ms ごとに実行します。`);
 	}
 
@@ -212,7 +212,7 @@ export class Execute {
 			throw new Error(`フィールド "${name}" が存在しません。`);
 		}
 
-		this.timeouts[name] = setTimeout(callback, delay);
+		this.fieldManager.timeouts[name] = setTimeout(callback, delay);
 		console.log(`フィールド "${name}" で関数を ${delay}ms 後に実行します。`);
 	}
 }
