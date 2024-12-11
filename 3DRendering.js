@@ -72,6 +72,7 @@ export class Field {
 		floor.rotation.x = -Math.PI / 2;
 		field.scene.add(floor);
 		field.floor = floor; // 床をフィールドオブジェクトに保存
+		console.log(`床の設定完了: サイズ(${field.size.x}, ${field.size.y}), 位置(${floor.position.x}, ${floor.position.y}, ${floor.position.z}), 回転(${floor.rotation.x}, ${floor.rotation.y}, ${floor.rotation.z})`);
 
 		// スカイボックスの初期設定（床の色と同じカラーコードを使用）
 		const initialColor = new THREE.Color(0x333333);
@@ -294,6 +295,31 @@ export class Camera {
 
 		field.controls.update(); // 設定変更を反映
 	}
+
+	// カメラの位置と回転を取得
+    getCameraProperties(fieldName) {
+        const field = this.fieldManager.fields[fieldName];
+        if (!field) {
+            throw new Error(`フィールド "${fieldName}" が存在しません。`);
+        }
+
+        if (!field.camera) {
+            throw new Error(`フィールド "${fieldName}" にカメラが設定されていません。`);
+        }
+
+        return {
+            position: {
+                x: field.camera.position.x,
+                y: field.camera.position.y,
+                z: field.camera.position.z,
+            },
+            rotation: {
+                x: field.camera.rotation.x,
+                y: field.camera.rotation.y,
+                z: field.camera.rotation.z,
+            },
+        };
+    }
 }
 
 export class Light {
@@ -545,7 +571,7 @@ export class Environment {
 			'number') {
 			// カラーコードを使用
 			const color = new THREE.Color(materialInput);
-			const texture = new THREE.CanvasTexture(this.createColorCanvas(color));
+			const texture = new THREE.CanvasTexture(this.fieldManager.createColorCanvas(color));//修正
 			field.skybox.material.map = texture;
 			field.skybox.material.needsUpdate = true;
 
