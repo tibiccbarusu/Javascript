@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>360°ビューア - フィールド切り替え</title>
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.149.0/examples/jsm/"
+          }
+        }
+    </script>
+    <script type="module">
+        // クラスのインポート
+        import { Field, Execute, Camera, Light, Object } from './3DRendering.js';
+        import { DOM } from './DOM.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // クラスのインスタンス作成
+            const field = new Field(); // フィールド管理クラス
+            const execute = new Execute(field); // 実行管理クラス
+            const camera = new Camera(field); // カメラ管理クラス
+            const light = new Light(field); // ライト管理クラス
+            const object = new Object(field); // オブジェクト管理クラス
+            const dom = new DOM(); // DOM管理クラス
+
+            // フィールド作成
+            const fields = ["field1", "field2", "field3"]; // フィールド名のリスト
+            fields.forEach((fieldName, index) => {
+                field.createField(fieldName, { x: 100, y: 100 }); // フィールド名とサイズを指定
+                field.initializeField(fieldName); // フィールドの初期化
+
+                // 最初にレンダリングを開始 (OrbitControls 初期化のため)
+                field.startRenderingField(fieldName, null, 'viewer');
+                field.stopRenderingField(fieldName); // 一旦停止
+
+                // カメラ設定
+                camera.setCameraControl(fieldName, {
+                    enablePan: true, // 平行移動を有効化
+                    enableRotate: true, // 回転を有効化
+                    enableZoom: true // ズームを有効化
+                });
+
+                // オブジェクト作成 (異なる種類のオブジェクト)
+                const objectName = `object${index + 1}`; // オブジェクト名
+                const objectTypes = ['sphere', 'cube', 'cylinder']; // オブジェクトの種類
+                const objectSizes = [
+                    10, // 球体の半径
+                    20, // 立方体の一辺の長さ
+                    { radiusTop: 5, radiusBottom: 5, height: 30 } // 円柱のサイズ
+                ];
+                const materialColors = [0xff0000, 0x00ff00, 0x0000ff]; // オブジェクトの色
+
+                object.createObject(
+                    fieldName, // フィールド名
+                    objectName, // オブジェクト名
+                    objectTypes[index], // オブジェクトの種類
+                    objectSizes[index], // サイズ
+                    materialColors[index] // 色
+                );
+
+                // ライト追加
+                light.addLight(fieldName, `light${index + 1}`, 'AmbientLight', {
+                    color: 0xffffff, // ライトの色
+                    intensity: 0.8 // ライトの強度
+                });
+            });
+
+            // レンダリング切り替え
+            let currentField = null; // 現在レンダリング中のフィールド
+
+            function switchField(fieldName) {
+                if (currentField) {
+                    field.stopRenderingField(currentField); // 現在のフィールドのレンダリングを停止
+                }
+                field.startRenderingField(fieldName, null, 'viewer'); // 指定されたフィールドをレンダリング
+                currentField = fieldName; // 現在のフィールドを更新
+            }
+
+            // ボタン用の親要素を作成
+            dom.addParentElement('div', 'buttonContainer'); 
+            // 'div'タグの親要素をID 'buttonContainer' で作成
+
+            // 各ボタンを作成してイベントを追加
+            fields.forEach((fieldName, index) => {
+                const buttonId = `btn${fieldName}`; // ボタンのIDを生成
+                dom.addChildToParent(
+                    'div', // 親要素のタグ
+                    'buttonContainer', // 親要素のID
+                    '', // 親要素のクラス (未指定)
+                    'button', // 子要素のタグ
+                    buttonId, // 子要素のID
+                    '' // 子要素のクラス (未指定)
+                );
+                dom.addDataToElement(
+                    'button', // 対象タグ
+                    buttonId, // 対象要素のID
+                    `フィールド${index + 1}` // ボタンのテキスト
+                );
+                dom.addEventToElement(
+                    'button', // 対象タグ
+                    buttonId, // 対象要素のID
+                    'click', // イベントタイプ
+                    () => switchField(fieldName) // イベント発生時のコールバック
+                );
+            });
+
+            // 初期フィールド表示
+            switchField('field1'); // 初期状態で 'field1' をレンダリング
+        });
+    </script>
+</head>
+<body>
+    <div id="viewer" style="width: 100vw; height: 90vh; margin-top: 10px;">
+        <!-- レンダリングエリア -->
+    </div>
+</body>
+</html>
