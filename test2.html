@@ -9,12 +9,12 @@
           "imports": {
             "three": "https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.module.js",
             "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.149.0/examples/jsm/"
-          }
+          } 
         }
     </script>
     <script type="module">
         // クラスのインポート
-        import { Field, Execute, Camera, Light, Object } from './3DRendering.js';
+        import { Field, Execute, Camera, Light, Environment, Object } from './3DRendering.js?v=1';//バージョニングで強制的に変更後を読み込む
         import { DOM } from './DOM.js';
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -23,6 +23,7 @@
             const execute = new Execute(field); // 実行管理クラス
             const camera = new Camera(field); // カメラ管理クラス
             const light = new Light(field); // ライト管理クラス
+            const environment = new Environment(field);
             const object = new Object(field); // オブジェクト管理クラス
             const dom = new DOM(); // DOM管理クラス
 
@@ -42,6 +43,12 @@
                     enableRotate: true, // 回転を有効化
                     enableZoom: true // ズームを有効化
                 });
+　　　　　　　　
+                //床を非表示
+                environment.toggleFieldFloorVisibility(fieldName, false);//無効
+                
+                //スカイボックスのテクスチャを変更
+                environment.setFieldEnvironmentTexture(fieldName, 0xffffff);//白
 
                 // オブジェクト作成 (異なる種類のオブジェクト)
                 const objectName = `object${index + 1}`; // オブジェクト名
@@ -113,7 +120,7 @@
     </script>
 </head>
 <body>
-    <div id="viewer" style="width: 100vw; height: 90vh; margin-top: 10px;">
+    <div id="viewer" style="width: 50vw; height: 50vh; margin-top: 10px;"><!-- レンダリングする場所とレンダリングする画面のサイズ -->
         <!-- レンダリングエリア -->
     </div>
 </body>
